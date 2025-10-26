@@ -1,0 +1,79 @@
+@mixin respond-to($breakpoint) {
+    @if $breakpoint == 'mobile-xs' {
+      @media (max-width: 374px) {
+        @content;
+      }
+    } @else if $breakpoint == 'mobile-sm' {
+      @media (min-width: 375px) and (max-width: 479px) {
+        @content;
+      }
+    } @else if $breakpoint == 'mobile' {
+      @media (max-width: 768px) {
+        @content;
+      }
+    } @else if $breakpoint == 'tablet' {
+      @media (min-width: 769px) {
+        @content;
+      }
+    } @else if $breakpoint == 'desktop' {
+      @media (min-width: 1025px) {
+        @content;
+      }
+    } @else if $breakpoint == 'desktop-lg' {
+      @media (min-width: 1440px) {
+        @content;
+      }
+    } @else if $breakpoint == 'desktop-xl' {
+      @media (min-width: 1920px) {
+        @content;
+      }
+    }
+  }
+  
+  @mixin display-control($display: none) {
+    display: $display;
+  }
+  @mixin ripple-effect() {
+    :deep(.ripple-effect) {
+      position: absolute;
+      background: var(--accent-color);
+      transform: scale(0);
+      pointer-events: none;
+      border-radius: 50%;
+      animation: wave 0.6s linear;
+    }
+  
+    @keyframes wave {
+      from {
+        opacity: 0.350;
+      }
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+  }
+  
+  @mixin menuIcon($margin: 10px){
+    display: block;
+    margin-right: $margin;
+  }
+  @mixin flexbox($flex-dir: row, $justify-content: center, $align-items: center){
+    display: flex;
+    flex-direction: $flex-dir;
+    justify-content: $justify-content;
+    align-items: $align-items;
+  }
+  
+  @mixin event-border {
+      content: "";
+      position: absolute;
+      top: 42%;
+      display: block;
+      width: calc(50% + 30px);
+      border-top-width: 1px;
+      border-top-style: solid;
+      margin-top: -1px;
+      z-index: -1;
+      border-color: var(--accent-color);   
+  }

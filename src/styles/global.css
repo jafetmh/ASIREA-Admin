@@ -1,0 +1,95 @@
+@import "bootstrap-icons/font/bootstrap-icons";
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Heebo:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,10,400;0,10,700&display=swap');
+:root{
+
+  --bg-body: #ffff;
+  --bg-body-1: #edf3fb;
+  --black-color: #000;
+  --black-rgb: 0,0,0;
+  --white-rgb: 255, 255,255;
+
+  --primary-green-color: #2e5540;
+  --bg-green: #f7fcf5;
+  --bg-green-1: #e5f5e0;
+
+  --text-color-1: #3c414a;
+  --text-color-2: #b0b3c1;
+  --text-color-3: #2C2C2C;
+  --title-color: #343a40;
+
+  --accent-color: ;
+  --accent-color-rgb: 21, 128, 61;
+
+  --aside-bg: #f7f7f8;
+  --nav-link-active: #eceef1;
+  --nav-active-color: #22252a;
+  --nav-link-active-hover: #eff2f6;
+
+  --tertiary-bg: #eff1f3;
+/*   --tertiary-bg: #F7F7F8;
+  --tertiary-bg-rgb: 247,247,248; */
+
+  --border-color: #dbdde1;
+  --icon-font-size: 1em;
+  --error-color: #e71414;
+  --error-sec-color: #df7171; 
+
+  --top-var: 58.84px;
+
+}
+body.dark-mode {
+  --bg-body: #0f111a;
+
+  --text-color-3: #e6e6ef;
+  --text-color-1: #818898;
+
+  --title-color:#e7ebed;
+
+ /*  --accent-color: #41ab5d;
+  --accent-color-rgb: 54, 228, 38; */
+
+  --line-clr: #42434a;
+  --hover-clr: #222533;
+
+  --aside-bg: #22252a;
+  --nav-link-active: #22252a;
+  --nav-link-active-color: #dbdde1;
+  --nav-link-active-hover: #393e46;
+
+  --tertiary-bg: #22252A;
+  --tertiary-bg-rgb: 34,37,42;
+
+  --border-color: #393e46;
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  color: var(--text-color-1);
+  font-weight: 300;
+  line-height: 1.5;
+  font-family: Heebo, san-serif;
+}
+@media (max-width: 768px){
+  body {
+    font-weight: 350;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    word-wrap: break-word;
+  }
+}
+
+.backdrop {
+  background-color: rgba(var(--black-rgb), 0.5);
+}

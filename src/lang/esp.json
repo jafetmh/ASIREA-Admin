@@ -1,0 +1,24 @@
+{
+    "Eventos": {
+        "evento1":{
+            "titulo": "Inicio",
+            "parrafo":  "Creada 1987 (ley 218), para promover la unión de industriales forestales de la madera en Zona Atlántica y mejorar la calidad de vida de sus asociados.",
+            "icon": "1"
+        },
+        "evento2": {
+            "titulo": "Nuevo Enfoque",
+            "parrafo": "Cambia su enfoque en 1996 cuando se establece la Ley Forestal 7575 y se crea el sistema de Pago por Servicio Ambiental.",
+            "icon": "2"
+        },
+        "evento3": {
+            "titulo": "Trascendencia",
+            "parrafo": "1996 Declarada de Utilidad Pública para los intereses del Estado (decreto ejecutivo número 25117-J)",
+            "icon": "3"
+        },
+        "evento4": {
+            "titulo": "Logro",
+            "parrafo": "18 años: un poco mas de 1 120 000 árboles SAF y 14 500 hectáreas de bosque en proyectos de conservación.",
+            "icon": "4"
+        }
+    }
+}
