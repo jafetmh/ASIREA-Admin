@@ -118,7 +118,7 @@ const closeModal = (callback?: () => void) => {
   .modal[open] {
     @include flexbox(column);
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(var(--black-rgb), .5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
     .dlg-buttons {
       width: 100%;
@@ -135,7 +135,7 @@ const closeModal = (callback?: () => void) => {
   }
 
   .modal::backdrop {
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(.5px);
   }
 
   dialog.show {

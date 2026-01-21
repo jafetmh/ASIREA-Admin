@@ -13,9 +13,11 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "aos": "^2.3.4",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.13.1",
+    "boxicons": "^2.1.4",
     "duo-icons": "^1.1.4",
     "jwt-decode": "^4.0.0",
     "pinia": "^3.0.1",

@@ -2,7 +2,7 @@
   <div class="dialog-container">
     <dialog class="modal rounded" ref="dialog">
       <div class="content">
-        <Vue3Lottie :animation-data="props.icon" :height="100" :width="100" :loop="false" style="margin-top: -15px;">
+        <Vue3Lottie :animation-data="props.icon" :height="70" :width="70" :loop="false" style="margin-top: -15px;">
         </Vue3Lottie>
         <div class="ms-2">
           <h6>{{ props.header }}</h6>
@@ -10,7 +10,9 @@
         </div>
       </div>
       <div class="dlg-buttons">
-        <button @click="closeModal">Cerrar</button>
+        <button @click="closeModal">
+          Cerrar
+        </button>
       </div>
     </dialog>
   </div>
@@ -71,17 +73,34 @@ const closeModal = () => {
 
     .dlg-buttons {
       button {
+        position: relative;
+        width: 130px;
+        border-radius: 5px;
+        font-weight: 500;
+        font-size: 1.1em;
+        padding: 10px 0;
+        background: #40a154;
         border: none;
-        padding: 10px;
-        background-color: var(--error-sec-color);
+        color: inherit;
+        cursor: pointer;
+
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 3px;
+          border: 2px solid var(--bg-body-1);
+          border-radius: 5px;
+          pointer-events: none;
+        }
       }
+
     }
   }
 
   .modal[open] {
     @include flexbox(column);
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(var(--black-rgb), .5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
     .dlg-buttons {
       width: 100%;
@@ -89,7 +108,7 @@ const closeModal = () => {
 
       button {
         width: 130px;
-        border-radius: 2px;
+        border-radius: 5px;
         font-weight: 300;
       }
     }

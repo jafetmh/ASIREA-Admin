@@ -2,34 +2,29 @@
   <div class="wrapper">
     <div class="login-container shadow-sm">
       <div class="h-100">
-        <div class="text-center mt-5">
-          <img :src="!authStore.darkMode ? AsireaSymbol : AsireaWhiteSymbol" alt="logo" class="me-2 asirea-logo" />
+        <div class="logo-section text-center mt-5">
+          <div class="logo-container" data-aos="fade-down" data-aos-duration="800">
+            <img src="/logo.png" alt="logo" />
+          </div>
+          <h2 class="association-name" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">ASIREA</h2>
         </div>
         <div class="d-flex justify-content-center">
           <div class="login-content">
             <div class="d-flex flex-column align-items-center mb-4">
-              <h5 class="header">Iniciar sesion</h5>
+              <h6 class="header">Inicio de Sesión</h6>
               <div class="underline"></div>
             </div>
             <form class="form" @submit.prevent="singIn">
               <div class="form-floating">
                 <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                    style="fill: var(--text-secondary-clr);">
-                    <path
-                      d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-                  </svg>
+                  <box-icon name="user" size="20px" color="currentColor"></box-icon>
                 </span>
                 <InputComponent id="username" placeholder="usuario" v-model="user.username" />
                 <label for="username">Usuario</label>
               </div>
               <div class="form-floating">
                 <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                    style="fill: var(--text-secondary-clr);">
-                    <path
-                      d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z" />
-                  </svg>
+                  <box-icon name="key" size="20px" color="currentColor"></box-icon>
                 </span>
                 <InputComponent id="password" placeholder="Contraseña" :type="isPasswordVisible ? 'text' : 'password'"
                   v-model="user.password" />
@@ -47,10 +42,10 @@
                   </svg>
                 </span>
               </div>
-              <div class="text-end" style="font-size: .95em;">
+              <!--               <div class="text-end" style="font-size: .95em;">
                 <a href=""><span>Recuperar contraseña</span></a>
-              </div>
-              <ButtonComponent :rounded="true" label="Acceder" class="sing-in-btn" type="submit" />
+              </div> -->
+              <ButtonComponent :rounded="true" label="Acceder" :strong-label="true" class="sing-in-btn" type="submit" />
               <div>
                 <div id="google-signIn-btn" role="button"></div>
               </div>
@@ -59,23 +54,23 @@
         </div>
       </div>
     </div>
-    <LoaderComponent v-if="loading" :class="{'backdrop': loading }"/>
-    <Dialog v-if="isError" :header="errorMessage.header" :message="errorMessage.message" :icon="error"
+    <LoaderComponent v-if="loading" :class="{ 'backdrop': loading }" />
+    <Dialog v-if="isError" :header="errorMessage.header" :message="errorMessage.message" :icon="alert"
       @close="isError = false"></Dialog>
   </div>
 </template>
 <script setup lang="ts">
-import AsireaSymbol from '../assets/Logosimbolo.webp'
-import AsireaWhiteSymbol from '../assets/logosimboloblanco.webp'
 import InputComponent from '@/components/InputComponent.vue';
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import LoaderComponent from '@/components/LoaderComponent.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import useAuthStore from '@/store/authStore';
 import type { User } from '@/interfaces/User';
 import Dialog from '@/components/DialogComponenet.vue';
 import { ERROR } from '@/const';
-import error from '@/assets/error.json'
+import alert from '@/assets/alert.json'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const isError = ref(false);
 const loading = ref<boolean>(false);
@@ -85,6 +80,13 @@ const authStore = useAuthStore();
 type UserLogin = Pick<User, "username" | "password">;
 const user = ref<UserLogin>({ username: "", password: "" });
 
+onMounted(() => {
+  AOS.init({
+    duration: 800,
+    once: true,
+    easing: 'ease-in-out'
+  });
+});
 
 const singIn = async () => {
   try {
@@ -146,9 +148,55 @@ const togglePasswordVisible = () => {
     max-height: 100vh;
     background-color: #f0f0f0;
 
-    .asirea-logo {
-      width: 80px;
-      height: 80px;
+    .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+
+      .logo-container {
+        width: 70px;
+        height: 70px;
+        padding: 10px;
+        background: var(--primary-green-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .association-name {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: var(--primary-green-color);
+        letter-spacing: 0.5px;
+        margin: 0;
+        text-transform: uppercase;
+        animation: text-shadow-pop-top 0.8s both;
+      }
+
+      @keyframes text-shadow-pop-top {
+        0% {
+          text-shadow:
+            0 0 #555555,
+            0 0 #555555,
+            0 0 #555555,
+            0 0 #555555,
+            0 0 #555555;
+          transform: translateY(0);
+        }
+
+        100% {
+          text-shadow:
+            0 -1px rgba(0, 0, 0, 0.25),
+            0 -2px rgba(0, 0, 0, 0.25);
+          transform: translateY(8px);
+        }
+      }
     }
 
     .login-content {
@@ -167,15 +215,15 @@ const togglePasswordVisible = () => {
     padding: 3em;
 
     .header {
-      font-weight: 800;
-      font-size: 1em;
+      font-weight: 500;
+      font-size: .7em;
     }
 
     .underline {
-      width: 100px;
+      width: 40px;
       height: 5px;
       border-radius: 5px;
-      background-color: var(--border-color);
+      background-color: var(--text-color-1);
     }
 
     .form {
@@ -231,9 +279,9 @@ const togglePasswordVisible = () => {
         margin: 0;
       }
 
-      .sing-in-btn,
-      .sing-in-btn:active {
-        color: var(--text-color);
+      .sing-in-btn {
+        padding: 12px 0;
+        border-color: var(--primary-green-color);
         background-color: rgba(var(--white-rgb), 1);
       }
     }

@@ -13,6 +13,7 @@
   --white-rgb: 255, 255,255;
 
   --primary-green-color: #2e5540;
+  --primary-green-color-rgb: 46, 85, 64;
   --bg-green: #f7fcf5;
   --bg-green-1: #e5f5e0;
 
@@ -92,4 +93,10 @@ body{
 
 .backdrop {
   background-color: rgba(var(--black-rgb), 0.5);
+}
+.form-control, .form-control:focus {
+    border-width: 1px;
+    border-color: var(--primary-green-color);
+    /* border-color: var(--text-color-1); */
+    box-shadow: none;
 }

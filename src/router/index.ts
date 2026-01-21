@@ -4,6 +4,7 @@ import UserProfile from '@/views/UserProfile.vue'
 import Login from '@/views/LoginView.vue'
 import AdminHome from '@/views/AdminHome.vue'
 import PublicationsView from '@/views/PublicationsView.vue'
+import JuntaDirectiva from '@/views/JuntaDirectiva.vue'
 import useAuthStore from '@/store/authStore'
 
 const router = createRouter({
@@ -44,6 +45,12 @@ const router = createRouter({
           name: 'noticias',
           meta: { requiresAuth: true },
           component: PublicationsView
+        },
+        {
+          path: 'junta',
+          name: 'junta',
+          meta: { requireAuth: true},
+          component: JuntaDirectiva
         }
       ]
     }

@@ -1,0 +1,7 @@
+<template> <svg xmlns="http://www.w3.org/2000/svg" :width="16" :height="16" fill="currentColor" viewBox="0 0 24 24">
+    <!-- Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free -->
+    <path
+      d="M14 11h8v2h-8zM8 4a4 4 0 1 0 0 8 4 4 0 1 0 0-8M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1">
+    </path>
+  </svg></template>
+<script setup>defineOptions({ name: "UserMinusIcon" });</script>

@@ -3,7 +3,7 @@
     <div v-if="modelValue" class="modal-backdrop" @click.self="closeModal">
       <div class="modal-container">
         <div class="modal-header">
-          <h5>{{ data.titulo?data.titulo:title }}</h5>
+          <h5>{{ data.titulo ? data.titulo : title }}</h5>
           <button class="close-btn" @click="closeModal">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
               fill="currentColor">
@@ -12,27 +12,41 @@
             </svg>
           </button>
         </div>
+
         <div class="modal-body">
           <div class="form-section">
             <form @submit.prevent="handleSubmit">
-              <div class="form-group">
+              <div class="form-floating">
+                <InputComponent id="titulo" v-model="formData.titulo" placeholder="Ingrese el título" required
+                  class="form-control" />
                 <label for="titulo">Título</label>
-                <InputComponent id="titulo" v-model="formData.titulo" placeholder="Ingrese el título" required />
               </div>
 
-              <div class="form-group">
-                <label for="imagen">Imagen/Portada</label>
-                <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
-                  class="file-input" />
+              <div id="file">
+                <div class="form-floating">
+                  <label for="imagen">Imagen/Portada</label>
+                  <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
+                    class="form-control file-input" />
+                </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-floating">
+                <textarea id="descripcion" class="form-control" v-model="formData.descripcion"
+                  placeholder="Ingrese la noticia" style="height: 100px" required></textarea>
                 <label for="descripcion">Contenido</label>
-                <textarea id="descripcion" v-model="formData.descripcion" placeholder="Ingrese la noticia" rows="5"
-                  required></textarea>
               </div>
-
-              <div class="with-document mb-2">
+              <div class="form-floating">
+                <select name="" id="cat" class="form-select form-control" aria-label="Elige una categoria"
+                  v-model="formData.categoria" required>
+                  <option value="" disabled selected>Elige una categoria</option>
+                  <option value="Noticia">Noticia</option>
+                  <option value="Informe">Informe</option>
+                  <option value="Proyecto">Proyecto</option>
+                  <option value="Ficha Tecnica">Ficha Técnica</option>
+                </select>
+                <label for="cat">Categoria</label>
+              </div>
+              <div class="with-document">
                 <label>Incluir archivo/documento</label>
                 <div class="switch-container">
                   <input type="checkbox" id="document-switch" v-model="documentEnabled" class="switch-input" />
@@ -41,10 +55,12 @@
               </div>
 
               <Transition name="document-slide">
-                <div v-if="documentEnabled" class="form-group mb-2">
-                  <label for="documento">Documento</label>
-                  <input type="file" id="documento" ref="documentInput" accept=".pdf,.doc,.docx"
-                    @change="onDocumentSelected" class="file-input" />
+                <div v-if="documentEnabled" id="file">
+                  <div class="form-floating">
+                    <label for="documento">Documento</label>
+                    <input type="file" id="documento" ref="documentInput" accept=".pdf,.doc,.docx"
+                      @change="onDocumentSelected" class="form-control file-input" />
+                  </div>
                 </div>
               </Transition>
             </form>
@@ -64,15 +80,19 @@
             </div>
 
             <div v-if="documentEnabled && documentUrl" class="document-actions">
-              <ButtonComponent label="Ver Documento" :strong-label="true"  :rounded="false" @click="openDocument" class="btn-document" />
+              <button @click="openDocument" class="btn-document">Revisar documento
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="1.5" d="m9 5l6 7l-6 7" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
-
         <div class="modal-footer">
           <div class="form-actions">
             <ButtonComponent type="button" label="Cancelar" :strong-label="true" :rounded="false" @click="closeModal"
-              class="btn-secondary"/>
+              class="btn-secondary" />
             <ButtonComponent type="submit" :label="isEdit ? 'Guardar Cambios' : 'Guardar'" :rounded="false"
               @click="handleSubmit" class="btn-primary" />
           </div>
@@ -90,6 +110,7 @@ import ButtonComponent from './ButtonComponent.vue';
 interface FormData {
   titulo: string;
   descripcion: string;
+  categoria: string;
   imagen?: File | string;
   documento?: File | string;
   imagenUrl?: string;
@@ -118,6 +139,7 @@ const emit = defineEmits<{
 const formData = reactive<FormData>({
   titulo: '',
   descripcion: '',
+  categoria: '',
   imagen: undefined,
   documento: undefined
 });
@@ -133,6 +155,7 @@ watch(() => props.data, (newData) => {
   if (newData) {
     formData.titulo = newData.titulo || '';
     formData.descripcion = newData.descripcion || '';
+    formData.categoria = newData.categoria || '';
 
     if (newData.imagenUrl) {
       imagePreview.value = newData.imagenUrl;
@@ -175,7 +198,7 @@ const openDocument = () => {
 };
 
 const handleSubmit = () => {
-  emit('submit', {...formData});
+  emit('submit', { ...formData });
   resetForm();
 };
 
@@ -187,6 +210,7 @@ const closeModal = () => {
 const resetForm = () => {
   formData.titulo = '';
   formData.descripcion = '';
+  formData.categoria = '';
   formData.imagen = undefined;
   formData.documento = undefined;
   imagePreview.value = '';
@@ -230,7 +254,6 @@ const resetForm = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 2px solid var(--border-color);
   background-color: var(--primary-green-color);
 
   h5 {
@@ -258,15 +281,16 @@ const resetForm = () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1.5rem;
+  padding: 10px 1.5rem;
   overflow-y: auto;
-  flex: 1;
+  background-color: #b5c2b7;
+  flex: 1 1 0%;
   min-height: 0;
 }
-
 .form-section {
   width: 100%;
 
+  /* default */
   form {
     display: flex;
     flex-direction: column;
@@ -275,6 +299,7 @@ const resetForm = () => {
   }
 }
 
+/* Estilso de formulario */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -282,7 +307,7 @@ const resetForm = () => {
 
   label {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 300;
     color: var(--text-color-1);
   }
 
@@ -306,7 +331,7 @@ const resetForm = () => {
 
   .file-input {
     padding: 0.75rem;
-    border: 2px dashed var(--border-color);
+    border: 2px dashed #0a8326;
     border-radius: 6px;
     background-color: var(--bg-body);
     color: var(--text-secondary-clr);
@@ -317,6 +342,20 @@ const resetForm = () => {
       border-color: var(--accent-color);
     }
   }
+}
+
+#file .form-floating>label {
+  padding-top: 0 !important;
+}
+
+.form-control {
+  border-color: var(--border-color);
+  background-color: var(--tertiary-bg);
+  transition: all .3s ease-in-out;
+}
+
+.form-control:focus {
+  box-shadow: 0 3px 5px var(--primary-green-color);
 }
 
 .with-document {
@@ -373,7 +412,7 @@ const resetForm = () => {
     }
 
     .switch-input:checked+.switch-label {
-      background-color: #28a745;
+      background-color: var(--primary-green-color);
     }
 
     .switch-input:checked+.switch-label::before {
@@ -386,10 +425,51 @@ const resetForm = () => {
   }
 }
 
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+::picker(select) {
+  opacity: 0;
+  background-color: var(--tertiary-bg);
+  border: 1px solid var(--border-color);
+  transition: all 0.4s allow-discrete;
+}
+
+@starting-style {
+  ::picker(select):popover-open {
+    opacity: 0;
+  }
+}
+
+::picker(select):popover-open {
+  opacity: 1;
+}
+
+::picker-icon {
+  display: none;
+}
+
+select option {
+  padding: 10px 12px;
+}
+
+select option {
+
+  &:hover {
+    background-color: rgba(12, 106, 54, 0.8) !important;
+  }
+
+  &::checkmark {
+    display: none;
+  }
+
+}
+
 .modal-footer {
   padding: 1.25rem 1.5rem;
-  border-top: 2px solid var(--border-color);
-  background-color: var(--tertiary-bg);
+  background: #b5c2b7;
   flex-shrink: 0;
 }
 
@@ -465,9 +545,10 @@ const resetForm = () => {
 
 .document-actions {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 
   .btn-document {
+    border: 1px solid var(--border-color);
     background-color: var(--tertiary-bg);
     color: var(--text-secondary-clr);
     padding: 0.75rem 1.5rem;
@@ -476,6 +557,7 @@ const resetForm = () => {
       background-color: var(--nav-link-active-hover);
     }
   }
+
 }
 
 // Transiciones
@@ -508,19 +590,19 @@ const resetForm = () => {
   opacity: 0;
   max-height: 0;
   margin-top: 0;
-  transform: translateY(-10px);
+  transform: translateY(-5px);
 }
 
 .document-slide-enter-to {
   opacity: 1;
-  max-height: 200px;
+  max-height: 50px;
   margin-top: 1rem;
   transform: translateY(0);
 }
 
 .document-slide-leave-from {
   opacity: 1;
-  max-height: 200px;
+  max-height: 50px;
   margin-top: 1rem;
   transform: translateY(0);
 }
@@ -529,7 +611,7 @@ const resetForm = () => {
   opacity: 0;
   max-height: 0;
   margin-top: 0;
-  transform: translateY(-10px);
+  transform: translateY(-5px);
 }
 
 // Responsive

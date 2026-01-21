@@ -10,8 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-
     const props = defineProps({
         placeholder: {
             type: String,
@@ -37,14 +35,3 @@ import { defineProps, defineEmits } from 'vue';
 
     const emit = defineEmits(['update:modelValue'])
 </script>
-<style scoped lang="scss">
-    .form-control {
-        color: var(--text-secondary-clr);
-    }
-    .form-control:focus {
-        border-width: 1px;
-        border-color: rgb(46, 85, 64);
-        /* border-color: var(--text-color-1); */
-        box-shadow: none;
-    }
-</style>

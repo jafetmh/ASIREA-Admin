@@ -17,10 +17,41 @@
   </div>
 
   <div class="noticias-container">
+    <!-- Panel de filtros -->
+    <div class="filter-panel">
+      <div class="filter-label">Filtrar por categoría:</div>
+      <div class="filter-buttons">
+        <button :class="['filter-btn', { active: categoriaFiltro === 'Todas' }]" @click="limpiarFiltro">
+          Todas
+          <span class="badge">{{ allPublications.length }}</span>
+        </button>
+        <button :class="['filter-btn', { active: categoriaFiltro === 'Noticia' }]"
+          @click="filtrarPorCategoria('Noticia')">
+          Noticias
+          <span class="badge">{{allPublications.filter(p => p.categoria === 'Noticia').length}}</span>
+        </button>
+        <button :class="['filter-btn', { active: categoriaFiltro === 'Proyecto' }]"
+          @click="filtrarPorCategoria('Proyecto')">
+          Proyectos
+          <span class="badge">{{allPublications.filter(p => p.categoria === 'Proyecto').length}}</span>
+        </button>
+        <button :class="['filter-btn', { active: categoriaFiltro === 'Informe' }]"
+          @click="filtrarPorCategoria('Informe')">
+          Informes
+          <span class="badge">{{allPublications.filter(p => p.categoria === 'Informe').length}}</span>
+        </button>
+        <button :class="['filter-btn', { active: categoriaFiltro === 'Ficha Tecnica' }]"
+          @click="filtrarPorCategoria('Ficha Tecnica')">
+          Fichas Técnicas
+          <span class="badge">{{allPublications.filter(p => p.categoria === 'Ficha Tecnica').length}}</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Grid Noticias -->
-    <div v-if="noticias.length > 0" class="mt-3">
+    <div v-if="publications.length > 0" class="mt-3">
       <div class="noticias-grid">
-        <div v-for="noticia in noticias" :key="noticia.id" class="noticia-card">
+        <div v-for="publication in publications" :key="publication.id" class="noticia-card">
           <div class="card-image">
             <div class="date-badge">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -30,22 +61,24 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              <span>{{ formatearFecha(noticia.fechaCreacion) }}</span>
+              <span>{{ formatearFecha(publication.fechaCreacion) }}</span>
             </div>
-            <img :src="noticia.imagenUrl || '/noticia-default.png'" :alt="noticia.titulo" />
+            <img :src="publication.imagenUrl || '/noticia-default.png'" :alt="publication.titulo" />
           </div>
           <div class="card-content">
-            <h3>{{ noticia.titulo }}</h3>
-            <p class="card-description">{{ noticia.descripcion }}</p>
+            <h3>{{ publication.titulo }}</h3>
+            <p class="card-description">{{ publication.descripcion }}</p>
           </div>
           <div class="card-footer">
-            <ButtonComponent label="Ver Noticia" :rounded="false" @click="openViewModal(noticia)" class="btn-view" />
-            <ButtonComponent label="Eliminar" :rounded="false" @click="openDeleteConfirm(noticia)" class="btn-delete" />
+            <ButtonComponent label="Ver Publicación" :rounded="false" @click="openViewModal(publication)"
+              class="btn-view" />
+            <ButtonComponent label="Eliminar" :rounded="false" @click="openDeleteConfirm(publication)"
+              class="btn-delete" />
           </div>
         </div>
       </div>
     </div>
-    <div v-if="noticias.length == 0 && !loading"
+    <div v-if="publications.length == 0 && !loading"
       class="d-flex flex-column justify-content-center align-items-center empty">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
         <path fill="currentColor"
@@ -57,13 +90,13 @@
       <p>Sin registros...</p>
     </div>
     <div v-if="loading" class="loader-wrapper backdrop">
-      <SecondLoaderComponent/>
+      <SecondLoaderComponent />
     </div>
-    <FormModal v-model="showModal" :title="modalTitle" :is-edit="isEditMode" :data="selectedNoticia"
+    <FormModal v-model="showModal" :title="modalTitle" :is-edit="isEditMode" :data="selectedPublication"
       @submit="handleSubmit" />
 
     <ConfirmDialog v-if="showDeleteDialog" :header="'Confirmar eliminación'"
-      :message="`¿Estás seguro de que deseas eliminar la noticia '${noticiaToDelete?.titulo}'?`"
+      :message="`¿Estás seguro de que deseas eliminar la noticia '${publicationToDelete?.titulo}'?`"
       :confirm-text="'Eliminar'" @confirm="handleDelete" @cancel="showDeleteDialog = false" />
   </div>
 </template>
@@ -73,33 +106,72 @@ import { ref, onMounted } from 'vue';
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import FormModal from '@/components/FormModal.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import { noticiasService } from '@/api/noticias';
-import { type Publicacion } from '@/interfaces/Publicacion';
+import publicacionesFactory, { type CategoriaPublicacion } from '@/api/publicacionesFactory';
+import { type Publication } from '@/interfaces/Publication';
 import SecondLoaderComponent from '@/components/SecondLoaderComponent.vue';
 
 const showModal = ref(false);
 const isEditMode = ref(false);
 const modalTitle = ref('');
-const selectedNoticia = ref<Partial<Publicacion>>({});
-const noticias = ref<Publicacion[]>([]);
+const selectedPublication = ref<Partial<Publication>>({});
+const allPublications = ref<Publication[]>([]); // Todas las publicaciones
+const publications = ref<Publication[]>([]); // Publicaciones filtradas
 const loading = ref(false);
 const showDeleteDialog = ref(false);
-const noticiaToDelete = ref<Publicacion | null>(null);
+const publicationToDelete = ref<Publication | null>(null);
+const categoriaFiltro = ref<CategoriaPublicacion | 'Todas'>('Todas'); // Filtro actual
 
 onMounted(async () => {
-  await cargarNoticias();
+  await loadAllPublications();
 });
 
-const cargarNoticias = async () => {
+//Carga todas las publicaciones de todas las categorías en paralelo
+const loadAllPublications = async () => {
   try {
     loading.value = true;
-    const data = await noticiasService.obtenerNoticias();
-    noticias.value = data.data;
+
+    const categorias = publicacionesFactory.getCategorias();
+
+    // Ejecutar todas las peticiones en paralelo
+    const promises = categorias.map(async (categoria) => {
+      const service = publicacionesFactory.getService(categoria);
+      const response = await service.obtenerPublicaciones();
+      return response.data || [];
+    });
+
+    // Esperar a que todas las peticiones terminen
+    const resultados = await Promise.all(promises);
+    allPublications.value = resultados.flat();
+    aplicarFiltro();
+
   } catch (error) {
-    console.error('Error al cargar noticias:', error);
+    console.error('Error al cargar publicaciones:', error);
   } finally {
     loading.value = false;
   }
+};
+
+
+//Aplica el filtro de categoría a las publicaciones
+const aplicarFiltro = () => {
+  if (categoriaFiltro.value === 'Todas') {
+    publications.value = allPublications.value;
+  } else {
+    publications.value = allPublications.value.filter(
+      pub => pub.categoria === categoriaFiltro.value
+    );
+  }
+};
+
+
+// Cambia el filtro de categoría
+const filtrarPorCategoria = (categoria: CategoriaPublicacion | 'Todas') => {
+  categoriaFiltro.value = categoria;
+  aplicarFiltro();
+};
+
+const limpiarFiltro = () => {
+  filtrarPorCategoria('Todas');
 };
 
 function formatearFecha(fechaISO: string) {
@@ -115,15 +187,15 @@ console.log(formatearFecha('2025-10-16')); // "16 de octubre de 2025"
 
 const openCreateModal = () => {
   isEditMode.value = false;
-  modalTitle.value = 'Crear Noticia';
-  selectedNoticia.value = {};
+  modalTitle.value = 'Crear Publicación';
+  selectedPublication.value = {};
   showModal.value = true;
 };
 
-const openViewModal = (noticia: Publicacion) => {
+const openViewModal = (noticia: Publication) => {
   isEditMode.value = true;
   modalTitle.value = 'Ver Noticia';
-  selectedNoticia.value = { ...noticia };
+  selectedPublication.value = { ...noticia };
   showModal.value = true;
 };
 
@@ -135,55 +207,67 @@ const handleSubmit = async (data: any) => {
     formData.append('titulo', data.titulo);
     formData.append('descripcion', data.descripcion);
 
+    //validar campo categoria
+    if (!data.categoria) {
+      console.error('La categoría es requerida');
+      return;
+    }
+    formData.append('categoria', data.categoria);
     if (data.imagen) {
       formData.append('imagenArchivo', data.imagen);
     }
-
     if (data.documento) {
       formData.append('documentoArchivo', data.documento);
     }
 
-    if (isEditMode.value && selectedNoticia.value.id) {
-      // Actualizar noticia existente
+    // Obtener el servicio correcto según la categoría
+    const service = publicacionesFactory.getService(data.categoria as CategoriaPublicacion);
+
+    if (isEditMode.value && selectedPublication.value.id) {
+      // Actualizar publicación existente
       const eliminarDocumento = !data.documentEnabled;
       formData.append('eliminarDocumento', eliminarDocumento.toString());
 
-      await noticiasService.actualizarNoticia(selectedNoticia.value.id, formData);
+      await service.actualizarPublicacion(selectedPublication.value.id, formData);
     } else {
-      await noticiasService.crearNoticia(formData);
+      await service.crearPublicacion(formData);
     }
 
-    // Recargar noticias
-    await cargarNoticias();
+    // Recargar publicaciones
+    await loadAllPublications();
     showModal.value = false;
   } catch (error) {
-    console.error('Error al guardar noticia:', error);
+    console.error('Error al guardar publicación:', error);
   } finally {
     loading.value = false;
   }
 };
 
-const openDeleteConfirm = (noticia: Publicacion) => {
-  noticiaToDelete.value = noticia;
+const openDeleteConfirm = (publication: Publication) => {
+  publicationToDelete.value = publication;
   showDeleteDialog.value = true;
 };
 
 const handleDelete = async () => {
-  if (!noticiaToDelete.value?.id) return;
+  if (!publicationToDelete.value?.id || !publicationToDelete.value?.categoria) return;
 
   try {
     loading.value = true;
-    await noticiasService.eliminarNoticia(noticiaToDelete.value.id);
-    await cargarNoticias();
+
+    // Obtener el servicio según la categoría de la publicación a eliminar
+    const service = publicacionesFactory.getService(publicationToDelete.value.categoria);
+
+    await service.eliminarPublicacion(publicationToDelete.value.id);
+    await loadAllPublications();
     showDeleteDialog.value = false;
-    noticiaToDelete.value = null;
+    publicationToDelete.value = null;
   } catch (error: any) {
-    console.error('Error al eliminar noticia:', error);
+    console.error('Error al eliminar publicación:', error);
     if (error.response) {
-      const message = error.response.data?.message || error.response.data?.error || 'Error al eliminar la noticia';
+      const message = error.response.data?.message || error.response.data?.error || 'Error al eliminar la publicación';
       alert(message);
     } else {
-      alert('Error al eliminar la noticia');
+      alert('Error al eliminar la publicación');
     }
   } finally {
     loading.value = false;
@@ -192,8 +276,8 @@ const handleDelete = async () => {
 </script>
 
 <style scoped lang="scss">
-
-.empty, .loader-wrapper {
+.empty,
+.loader-wrapper {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -212,6 +296,73 @@ const handleDelete = async () => {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Crect stroke='%23F0F0F0' stroke-width='.5' width='1' height='1' id='s'/%3E%3Cpattern id='a' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cuse fill='%23eeeeee' href='%23s' y='2'/%3E%3Cuse fill='%23eeeeee' href='%23s' x='1' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s' x='2' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='2'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='1' y='1'/%3E%3C/pattern%3E%3Cpattern id='b' width='7' height='11' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s'/%3E%3Cuse href='%23s' y='5' /%3E%3Cuse href='%23s' x='1' y='10'/%3E%3Cuse href='%23s' x='2' y='1'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='8'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='5' y='2'/%3E%3Cuse href='%23s' x='5' y='6'/%3E%3Cuse href='%23s' x='6' y='9'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='h' width='5' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s' y='5'/%3E%3Cuse href='%23s' y='8'/%3E%3Cuse href='%23s' x='1' y='1'/%3E%3Cuse href='%23s' x='1' y='9'/%3E%3Cuse href='%23s' x='1' y='12'/%3E%3Cuse href='%23s' x='2'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='2'/%3E%3Cuse href='%23s' x='3' y='6'/%3E%3Cuse href='%23s' x='3' y='11'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='4' y='10'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='c' width='17' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e4e4e4'%3E%3Cuse href='%23s' y='11'/%3E%3Cuse href='%23s' x='2' y='9'/%3E%3Cuse href='%23s' x='5' y='12'/%3E%3Cuse href='%23s' x='9' y='4'/%3E%3Cuse href='%23s' x='12' y='1'/%3E%3Cuse href='%23s' x='16' y='6'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='d' width='19' height='17' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23F0F0F0'%3E%3Cuse href='%23s' y='9'/%3E%3Cuse href='%23s' x='16' y='5'/%3E%3Cuse href='%23s' x='14' y='2'/%3E%3Cuse href='%23s' x='11' y='11'/%3E%3Cuse href='%23s' x='6' y='14'/%3E%3C/g%3E%3Cg fill='%23e1e1e1'%3E%3Cuse href='%23s' x='3' y='13'/%3E%3Cuse href='%23s' x='9' y='7'/%3E%3Cuse href='%23s' x='13' y='10'/%3E%3Cuse href='%23s' x='15' y='4'/%3E%3Cuse href='%23s' x='18' y='1'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='e' width='47' height='53' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='2' y='5'/%3E%3Cuse href='%23s' x='16' y='38'/%3E%3Cuse href='%23s' x='46' y='42'/%3E%3Cuse href='%23s' x='29' y='20'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='f' width='59' height='71' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='33' y='13'/%3E%3Cuse href='%23s' x='27' y='54'/%3E%3Cuse href='%23s' x='55' y='55'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='g' width='139' height='97' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='11' y='8'/%3E%3Cuse href='%23s' x='51' y='13'/%3E%3Cuse href='%23s' x='17' y='73'/%3E%3Cuse href='%23s' x='99' y='57'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23b)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23h)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23c)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23d)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23e)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23f)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
   background-attachment: fixed;
   background-size: cover;
+}
+
+// Panel de filtros
+.filter-panel {
+  background: var(--tertiary-bg);
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(var(--black-rgb), 0.08);
+
+  .filter-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color-1);
+    margin-bottom: 0.75rem;
+  }
+
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    .filter-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      background: var(--bg-body);
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary-clr);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: var(--primary-green-color);
+        background: rgba(46, 85, 64, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(var(--black-rgb), 0.1);
+      }
+
+      &.active {
+        background: var(--primary-green-color);
+        border-color: var(--primary-green-color);
+        color: white;
+        box-shadow: 0 4px 12px rgba(46, 85, 64, 0.3);
+
+        .badge {
+          background: rgba(255, 255, 255, 0.25);
+          color: white;
+        }
+      }
+
+      .badge {
+        background: var(--primary-green-color);
+        color: white;
+        padding: 0.15rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        min-width: 24px;
+        text-align: center;
+      }
+    }
+  }
 }
 
 .page-header {
@@ -413,6 +564,25 @@ const handleDelete = async () => {
 @include respond-to(mobile-xs) {
   .noticias-container {
     padding: 1rem;
+  }
+
+  .filter-panel {
+    padding: 1rem;
+
+    .filter-label {
+      font-size: 0.85rem;
+    }
+
+    .filter-buttons {
+      gap: 0.5rem;
+
+      .filter-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        flex: 1 1 calc(50% - 0.25rem);
+        justify-content: center;
+      }
+    }
   }
 
   .page-header {
