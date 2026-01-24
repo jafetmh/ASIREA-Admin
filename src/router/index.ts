@@ -6,6 +6,7 @@ import AdminHome from '@/views/AdminHome.vue'
 import PublicationsView from '@/views/PublicationsView.vue'
 import JuntaDirectiva from '@/views/JuntaDirectiva.vue'
 import useAuthStore from '@/store/authStore'
+import PersonalAdmin from '@/views/PersonalAdmin.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -51,6 +52,12 @@ const router = createRouter({
           name: 'junta',
           meta: { requireAuth: true},
           component: JuntaDirectiva
+        },
+         {
+          path: 'personal-admin',
+          name: 'personal-admin',
+          meta: { requireAuth: true},
+          component: PersonalAdmin
         }
       ]
     }

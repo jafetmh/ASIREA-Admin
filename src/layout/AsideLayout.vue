@@ -43,50 +43,28 @@
           <span>Junta Directiva</span>
         </a>
       </li>
-      <!--       <li>
-        <button @click="toggleSubMenu($event)" class="dropdown-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-            fill="currentColor">
+      <li :class="{ active: isActive('/admin/personal-admin') }">
+        <a href="/admin/personal-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
             <path
-              d="m221-313 142-142q12-12 28-11.5t28 12.5q11 12 11 28t-11 28L250-228q-12 12-28 12t-28-12l-86-86q-11-11-11-28t11-28q11-11 28-11t28 11l57 57Zm0-320 142-142q12-12 28-11.5t28 12.5q11 12 11 28t-11 28L250-548q-12 12-28 12t-28-12l-86-86q-11-11-11-28t11-28q11-11 28-11t28 11l57 57Zm339 353q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h280q17 0 28.5 11.5T880-320q0 17-11.5 28.5T840-280H560Zm0-320q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h280q17 0 28.5 11.5T880-640q0 17-11.5 28.5T840-600H560Z" />
+              d="M10 13H8c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5m-5 5c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3zm7.73-11.49c-.08-.22-.19-.42-.3-.62v-.01c-.69-1.14-1.93-1.89-3.42-1.89-2.28 0-4 1.72-4 4s1.72 4 4 4c1.49 0 2.73-.74 3.42-1.89v-.01c.12-.2.22-.4.3-.62.02-.06.03-.12.05-.18.06-.17.11-.34.15-.52.05-.25.07-.51.07-.78s-.03-.53-.07-.78c-.03-.18-.09-.35-.15-.52-.02-.06-.03-.12-.05-.18M9 10c-1.18 0-2-.82-2-2s.82-2 2-2 2 .82 2 2-.82 2-2 2m6 0q-.165 0-.33-.03c-.22.66-.56 1.27-.98 1.81.41.13.84.22 1.31.22 2.28 0 4-1.72 4-4s-1.72-4-4-4c-.47 0-.9.09-1.31.22.43.53.76 1.14.98 1.81.11-.01.21-.03.33-.03 1.18 0 2 .82 2 2s-.82 2-2 2m1 3h-1.11c.6.58 1.08 1.27 1.44 2.03C17.83 15.2 19 16.46 19 18h-2v1c0 .35-.07.69-.18 1H20c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5">
+            </path>
           </svg>
-          <span>Todo-Lists</span>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-            fill="currentColor">
-            <path
-              d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z" />
-          </svg>
-        </button>
-        <ul class="sub-menu">
-          <div>
-            <li><a href="#">Work</a></li>
-            <li><a href="#">Private</a></li>
-            <li><a href="#">Coding</a></li>
-            <li><a href="#">Gardening</a></li>
-            <li><a href="#">School</a></li>
-          </div>
-        </ul>
-      </li>
-      <li :class="{ active: isActive('/admin/calendar') }">
-        <a href="/admin/calendar">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-            fill="currentColor">
-            <path
-              d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-40q0-17 11.5-28.5T280-880q17 0 28.5 11.5T320-840v40h320v-40q0-17 11.5-28.5T680-880q17 0 28.5 11.5T720-840v40h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" />
-          </svg>
-          <span>Calendar</span>
+          <span>Personal <br>Administrativo</span>
         </a>
       </li>
-      <li :class="{ active: isActive('/admin/profile') }">
-        <a href="/admin/profile">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-            fill="currentColor">
-            <path
-              d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Zm80 0h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
+      <li>
+        <a href="#" @click.prevent="logout">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"
+            transform="scale(1,-1) rotate(180)">
+            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+            <path d="M9 13h7v-2H9V7l-6 5 6 5z"></path>
+            <path d="M19 3h-7v2h7v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"></path>
           </svg>
-          <span>Profile</span>
+          <span>Cerrar sesión</span>
         </a>
-      </li> -->
+      </li>
     </ul>
   </aside>
 </template>
@@ -94,8 +72,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import useAuthStore from '@/store/authStore'
 
 const aside = ref<HTMLElement | null>(null)
+const authStore = useAuthStore()
 const toggleButton = ref<HTMLElement | null>(null)
 const subMenus = ref<HTMLElement[]>([])
 const route = useRoute()
@@ -150,13 +130,17 @@ function closeAllSubMenus() {
     })
   }
 }
+
+function logout() {
+  authStore.logout()
+}
 </script>
 <style scoped lang="scss">
 #sidebar {
   box-sizing: border-box;
   height: calc(100vh - 58.84px);
   width: 250px;
-  padding: 5px 1em;
+  padding: .5em 0;
   background-color: var(--tertiary-bg);
   border-right: 1px solid var(--border-color);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -172,6 +156,10 @@ function closeAllSubMenus() {
 #sidebar.close {
   padding: 5px;
   width: 60px;
+
+  ul li.active a {
+    border-radius: .5em;
+  }
 }
 
 
@@ -195,15 +183,14 @@ function closeAllSubMenus() {
 }
 
 #sidebar ul li.active a {
-  box-shadow: 0 1px 2px rgba(var(--black-rgb), 0.300);
+  width: 100%;
   color: var(--accent-color);
-  background-color: var(--nav-link-active-hover);
+  background-color: var(--active-link);
 }
 
 #sidebar a,
 #sidebar .dropdown-btn,
 #sidebar .logo {
-  border-radius: 0.5em;
   padding: 0.85em;
   text-decoration: none;
   color: var(--text-secondary-clr);
@@ -217,6 +204,7 @@ function closeAllSubMenus() {
 li .sub-menu {
   font-size: 1em;
   font-weight: 400;
+  color: var(--nav-link-active-color);
 }
 
 .dropdown-btn {
@@ -254,6 +242,10 @@ li .sub-menu {
   }
 }
 
+ul li a svg {
+  color: var(--nav-link-active-color);
+}
+
 #sidebar .sub-menu.show {
   grid-template-rows: 1fr;
 }
@@ -286,7 +278,7 @@ li .sub-menu {
 }
 
 #toggle-btn:hover {
-  background-color: rgba(var(--primary-green-color-rgb), .5);
+  background-color: var(--active-link);
 }
 
 .container {

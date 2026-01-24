@@ -15,55 +15,57 @@
 
         <div class="modal-body">
           <div class="form-section">
-            <form @submit.prevent="handleSubmit">
-              <div class="form-floating">
-                <InputComponent id="titulo" v-model="formData.titulo" placeholder="Ingrese el título" required
-                  class="form-control" />
-                <label for="titulo">Título</label>
-              </div>
-
-              <div id="file">
+            <div class="form-wrapper">
+              <form @submit.prevent="handleSubmit">
                 <div class="form-floating">
-                  <label for="imagen">Imagen/Portada</label>
-                  <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
-                    class="form-control file-input" />
+                  <InputComponent id="titulo" v-model="formData.titulo" placeholder="Ingrese el título" required
+                    class="form-control" />
+                  <label for="titulo">Título</label>
                 </div>
-              </div>
 
-              <div class="form-floating">
-                <textarea id="descripcion" class="form-control" v-model="formData.descripcion"
-                  placeholder="Ingrese la noticia" style="height: 100px" required></textarea>
-                <label for="descripcion">Contenido</label>
-              </div>
-              <div class="form-floating">
-                <select name="" id="cat" class="form-select form-control" aria-label="Elige una categoria"
-                  v-model="formData.categoria" required>
-                  <option value="" disabled selected>Elige una categoria</option>
-                  <option value="Noticia">Noticia</option>
-                  <option value="Informe">Informe</option>
-                  <option value="Proyecto">Proyecto</option>
-                  <option value="Ficha Tecnica">Ficha Técnica</option>
-                </select>
-                <label for="cat">Categoria</label>
-              </div>
-              <div class="with-document">
-                <label>Incluir archivo/documento</label>
-                <div class="switch-container">
-                  <input type="checkbox" id="document-switch" v-model="documentEnabled" class="switch-input" />
-                  <label for="document-switch" class="switch-label"></label>
-                </div>
-              </div>
-
-              <Transition name="document-slide">
-                <div v-if="documentEnabled" id="file">
+                <div id="file">
                   <div class="form-floating">
-                    <label for="documento">Documento</label>
-                    <input type="file" id="documento" ref="documentInput" accept=".pdf,.doc,.docx"
-                      @change="onDocumentSelected" class="form-control file-input" />
+                    <label for="imagen">Imagen/Portada</label>
+                    <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
+                      class="form-control file-input" />
                   </div>
                 </div>
-              </Transition>
-            </form>
+
+                <div class="form-floating">
+                  <textarea id="descripcion" class="form-control" v-model="formData.descripcion"
+                    placeholder="Ingrese la noticia" style="height: 100px" required></textarea>
+                  <label for="descripcion">Contenido</label>
+                </div>
+                <div class="form-floating">
+                  <select name="" id="cat" class="form-select form-control" aria-label="Elige una categoria"
+                    v-model="formData.categoria" required>
+                    <option value="" disabled selected>Elige una categoria</option>
+                    <option value="Noticia">Noticia</option>
+                    <option value="Informe">Informe</option>
+                    <option value="Proyecto">Proyecto</option>
+                    <option value="Ficha Tecnica">Ficha Técnica</option>
+                  </select>
+                  <label for="cat">Categoria</label>
+                </div>
+                <div class="with-document">
+                  <label>Incluir archivo/documento</label>
+                  <div class="switch-container">
+                    <input type="checkbox" id="document-switch" v-model="documentEnabled" class="switch-input" />
+                    <label for="document-switch" class="switch-label"></label>
+                  </div>
+                </div>
+
+                <Transition name="document-slide">
+                  <div v-if="documentEnabled" id="file">
+                    <div class="form-floating">
+                      <label for="documento">Documento</label>
+                      <input type="file" id="documento" ref="documentInput" accept=".pdf,.doc,.docx"
+                        @change="onDocumentSelected" class="form-control file-input" />
+                    </div>
+                  </div>
+                </Transition>
+              </form>
+            </div>
           </div>
 
           <div class="preview-section">
@@ -260,7 +262,7 @@ const resetForm = () => {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-color-2);
+    color: var(--btn-primary-text);
   }
 
   .close-btn {
@@ -278,19 +280,27 @@ const resetForm = () => {
 }
 
 .modal-body {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 10px 1.5rem;
   overflow-y: auto;
-  background-color: #b5c2b7;
+  background-color: var(--bg-body);
   flex: 1 1 0%;
   min-height: 0;
 }
 .form-section {
   width: 100%;
+}
 
-  /* default */
+.form-wrapper {
+  background-color: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  backdrop-filter: blur(5px);
+
   form {
     display: flex;
     flex-direction: column;
@@ -331,15 +341,15 @@ const resetForm = () => {
 
   .file-input {
     padding: 0.75rem;
-    border: 2px dashed #0a8326;
+    border: 2px dashed var(--primary-green-color);
     border-radius: 6px;
     background-color: var(--bg-body);
-    color: var(--text-secondary-clr);
+    color: var(--text-color-3);
     cursor: pointer;
     transition: border-color 0.2s;
 
     &:hover {
-      border-color: var(--accent-color);
+      border-color: var(--btn-hover-green);
     }
   }
 }
@@ -350,12 +360,14 @@ const resetForm = () => {
 
 .form-control {
   border-color: var(--border-color);
-  background-color: var(--tertiary-bg);
+  background-color: var(--form-input-bg);
+  color: var(--text-color-3);
   transition: all .3s ease-in-out;
 }
 
 .form-control:focus {
-  box-shadow: 0 3px 5px var(--primary-green-color);
+  box-shadow: 0 3px 5px rgba(var(--primary-green-color-rgb), 0.3);
+  border-color: var(--primary-green-color);
 }
 
 .with-document {
@@ -405,7 +417,7 @@ const resetForm = () => {
         width: 20px;
         left: 3px;
         bottom: 3px;
-        background-color: white;
+        background-color: var(--card-bg-solid);
         transition: transform 0.3s ease;
         border-radius: 50%;
       }
@@ -432,7 +444,6 @@ select,
 
 ::picker(select) {
   opacity: 0;
-  background-color: var(--tertiary-bg);
   border: 1px solid var(--border-color);
   transition: all 0.4s allow-discrete;
 }
@@ -458,7 +469,7 @@ select option {
 select option {
 
   &:hover {
-    background-color: rgba(12, 106, 54, 0.8) !important;
+    background-color: rgba(var(--primary-green-color-rgb), 0.8) !important;
   }
 
   &::checkmark {
@@ -469,8 +480,9 @@ select option {
 
 .modal-footer {
   padding: 1.25rem 1.5rem;
-  background: #b5c2b7;
+  background: var(--tertiary-bg);
   flex-shrink: 0;
+  border-top: 1px solid var(--border-color);
 }
 
 .form-actions {
@@ -484,18 +496,27 @@ select option {
   }
 
   .btn-secondary {
-    background-color: var(--tertiary-bg);
+    background-color: var(--bg-body);
     border: 1px solid var(--border-color);
+    color: var(--text-color-3);
     transition: all .3s ease;
 
     &:hover {
-      box-shadow: 0 2px 2px rgba(46, 85, 64, .5);
+      box-shadow: 0 2px 4px rgba(var(--primary-green-color-rgb), 0.3);
+      transform: translateY(-1px);
     }
   }
 
   .btn-primary {
     background-color: var(--primary-green-color);
-    color: var(--text-color);
+    color: var(--btn-primary-text);
+    transition: all .3s ease;
+
+    &:hover {
+      background-color: var(--btn-hover-green);
+      box-shadow: 0 2px 8px rgba(var(--primary-green-color-rgb), 0.3);
+      transform: translateY(-1px);
+    }
   }
 }
 

@@ -38,7 +38,7 @@ const useAuthStore = defineStore('auth', {
             this.token = null,
             this.isAuthenticated = false,
             sessionStorage.removeItem('token');
-            router.push('/login')
+            router.push('/')
         }
     }
 

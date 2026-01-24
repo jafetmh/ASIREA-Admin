@@ -27,6 +27,7 @@ const toggleAside = () => {
 .main {
   position: relative;
   margin-top: -20px;
+  min-width: 0;
 }
 
 @include respond-to(mobile) {

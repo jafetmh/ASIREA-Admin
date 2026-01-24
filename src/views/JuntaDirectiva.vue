@@ -255,7 +255,7 @@ onMounted(() => {
 /* Members Grid */
 .members-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 300px));
   gap: 1.5rem;
 }
 
@@ -388,7 +388,7 @@ onMounted(() => {
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: white;
+  background-color: var(--content-bg);
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

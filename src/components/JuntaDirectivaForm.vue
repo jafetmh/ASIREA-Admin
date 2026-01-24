@@ -37,39 +37,62 @@
               <div class="form-floating">
                 <InputComponent id="ocupacion" v-model="formData.ocupacion"
                   placeholder="Ingrese la ocupación profesional" class="form-control" />
-                <label for="ocupacion">Ocupación Profesional <span class="optional">(Opcional)</span></label>
+                <label for="ocupacion">Ocupación <span class="optional">(Opcional)</span></label>
               </div>
-
-              <!-- Campo Foto -->
-              <div id="file">
-                <div class="form-floating">
-                  <label for="foto">Fotografía</label>
-                  <input type="file" id="foto" ref="imageInput"
-                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" @change="onImageSelected"
-                    class="form-control file-input" />
-                </div>
-                <small class="file-help">Formatos: JPG, PNG, GIF, WEBP. Máx: 5MB</small>
-              </div>
-              <div v-if="errors.foto" class="error-message">{{ errors.foto }}</div>
             </form>
           </div>
 
           <div class="preview-section">
-            <!-- Preview de la imagen -->
-            <div v-if="imagePreview" class="image-preview">
-              <img :src="imagePreview" alt="Preview" />
-              <button type="button" class="btn-remove-image" @click="removeImage">
-                Remover imagen
-              </button>
+            <!-- Input oculto -->
+            <input type="file" id="foto" ref="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+              @change="onImageSelected" style="display: none;" />
+
+            <!-- Zona de upload interactiva -->
+            <div class="upload-zone" :class="{ 'has-image': imagePreview }" @click="triggerFileInput">
+              <!-- Placeholder cuando no hay imagen -->
+              <div v-if="!imagePreview" class="upload-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M21 14V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5v-1.59l3-3 1.29 1.29c.39.39 1.02.39 1.41 0l5.29-5.29 3 3V14h2Zm-4.29-5.71a.996.996 0 0 0-1.41 0l-5.29 5.29-1.29-1.29a.996.996 0 0 0-1.41 0l-2.29 2.29V5h14v5.59L16.73 8.3Z">
+                  </path>
+                  <path d="M8.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M21 16h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path>
+                </svg>
+                <p>
+                  <strong>Clic para agregar fotografía</strong>
+                  o arrastra una imagen aquí
+                </p>
+                <small class="file-help">Formatos: JPG, PNG, GIF, WEBP. Máx: 5MB</small>
+              </div>
+
+              <!-- Preview cuando hay imagen -->
+              <div v-else class="image-preview" @click.stop>
+                <img :src="imagePreview" alt="Preview" />
+                <div class="image-actions">
+                  <button type="button" class="btn-change-image" @click="triggerFileInput">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                      <path
+                        d="M21 14V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5v-1.59l3-3 1.29 1.29c.39.39 1.02.39 1.41 0l5.29-5.29 3 3V14h2Zm-4.29-5.71a.996.996 0 0 0-1.41 0l-5.29 5.29-1.29-1.29a.996.996 0 0 0-1.41 0l-2.29 2.29V5h14v5.59L16.73 8.3Z">
+                      </path>
+                      <path d="M8.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M21 16h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path>
+                    </svg>
+                    Cambiar
+                  </button>
+                  <button type="button" class="btn-remove-image" @click="removeImage">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                      <path
+                        d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z">
+                      </path>
+                    </svg>
+                    Eliminar
+                  </button>
+                </div>
+              </div>
             </div>
-            <div v-else class="no-preview">
-              <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px"
-                fill="currentColor">
-                <path
-                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z" />
-              </svg>
-              <p>Sin imagen</p>
-            </div>
+            <div v-if="errors.foto" class="error-message">{{ errors.foto }}</div>
           </div>
         </div>
 
@@ -77,8 +100,8 @@
           <div class="form-actions">
             <ButtonComponent type="button" label="Cancelar" :strong-label="true" :rounded="false" @click="closeModal"
               class="btn-secondary" />
-            <ButtonComponent type="submit" :label="isEdit ? 'Guardar Cambios' : 'Guardar'" :rounded="false" @click="handleSubmit"
-              class="btn-primary" />
+            <ButtonComponent type="submit" :label="isEdit ? 'Guardar Cambios' : 'Guardar'" :rounded="false"
+              @click="handleSubmit" :disabled="!isFormValid" class="btn-primary" />
           </div>
         </div>
       </div>
@@ -183,6 +206,10 @@ watch(() => props.data, (newData) => {
   }
 }, { immediate: true });
 
+const triggerFileInput = () => {
+  imageInput.value?.click();
+};
+
 const onImageSelected = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files[0]) {
@@ -216,6 +243,7 @@ const removeImage = () => {
   selectedFile.value = null;
   imagePreview.value = '';
   formData.fotoArchivo = undefined;
+  formData.foto = undefined;
   if (imageInput.value) {
     imageInput.value.value = '';
   }
@@ -275,7 +303,7 @@ const resetForm = () => {
 
 .modal-container {
   background-color: var(--bg-green);
-  border-radius: 5px;
+  border-radius: 8px;
   max-width: 95vw;
   max-height: 90vh;
   overflow: hidden;
@@ -295,7 +323,7 @@ const resetForm = () => {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-color-2);
+    color: var(--btn-primary-text);
   }
 
   .close-btn {
@@ -309,6 +337,12 @@ const resetForm = () => {
     justify-content: center;
     color: var(--text-secondary-clr);
     background-color: var(--bg-body);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--tertiary-bg);
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -316,9 +350,9 @@ const resetForm = () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 10px 1.5rem;
+  padding: 1.5rem;
   overflow-y: auto;
-  background-color: #b5c2b7;
+  background-color: var(--bg-body);
   flex: 1 1 0%;
   min-height: 0;
 }
@@ -334,51 +368,36 @@ const resetForm = () => {
   }
 }
 
-#file .form-floating>label {
-  padding-top: 0 !important;
-}
-
 .form-control {
   border-color: var(--border-color);
-  background-color: var(--tertiary-bg);
+  background-color: var(--form-input-bg);
+  color: var(--text-color-3);
   transition: all .3s ease-in-out;
-}
+  backdrop-filter: blur(5px);
 
-.form-control:focus {
-  box-shadow: 0 3px 5px var(--primary-green-color);
-}
-
-.file-input {
-  padding: 0.75rem !important;
-  border: 2px dashed #0a8326 !important;
-  border-radius: 6px;
-  background-color: var(--bg-body);
-  color: var(--text-secondary-clr);
-  cursor: pointer;
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: var(--accent-color);
+  &:focus {
+    background-color: var(--form-input-bg-focus);
+    box-shadow: 0 3px 8px rgba(var(--primary-green-color-rgb), 0.15);
+    border-color: var(--primary-green-color);
   }
 }
 
-.file-help {
-  display: block;
-  margin-top: 0.25rem;
-  color: var(--text-secondary-clr);
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
 .error-message {
-  color: #dc3545;
+  color: var(--error-color);
   font-size: 0.875rem;
   margin-top: -0.5rem;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &::before {
+    content: '⚠';
+  }
 }
 
 .required {
-  color: #dc3545;
+  color: var(--error-color);
 }
 
 .optional {
@@ -388,10 +407,161 @@ const resetForm = () => {
   opacity: 0.7;
 }
 
+// Zona de upload mejorada
+.preview-section {
+  width: 100%;
+}
+
+.upload-zone {
+  border: 2px dashed var(--primary-green-color);
+  border-radius: 12px;
+  background: var(--form-bg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+
+  &:hover:not(.has-image) {
+    border-color: var(--primary-green-color);
+    background: var(--form-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-green-color-rgb), 0.1);
+  }
+
+  &.has-image {
+    border-style: solid;
+    padding: 0;
+    cursor: default;
+    border-color: var(--border-color);
+  }
+
+  .upload-content {
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+
+    svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+      color: var(--primary-green-color);
+      transition: all 0.3s ease;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text-secondary-clr);
+      font-size: 0.95rem;
+      line-height: 1.5;
+
+      strong {
+        color: var(--primary-green-color);
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+      }
+    }
+
+    .file-help {
+      display: block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      color: var(--text-secondary-clr);
+    }
+  }
+
+  &:hover:not(.has-image) .upload-content svg {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+
+  .image-preview {
+    position: relative;
+    border: none;
+    width: 100%;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .image-actions {
+      opacity: 1;
+    }
+  }
+}
+
+.btn-change-image,
+.btn-remove-image {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &.btn-change-image {
+    background: var(--card-bg);
+    color: var(--primary-green-color);
+
+    &:hover {
+      background: var(--card-bg-solid);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &.btn-remove-image {
+    background: var(--error-color);
+    color: var(--btn-primary-text);
+
+    &:hover {
+      background: var(--error-color);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(231, 20, 20, 0.4);
+      filter: brightness(1.1);
+    }
+  }
+}
+
 .modal-footer {
   padding: 1.25rem 1.5rem;
-  background: #b5c2b7;
+  background: var(--tertiary-bg);
   flex-shrink: 0;
+  border-top: 1px solid var(--border-color);
 }
 
 .form-actions {
@@ -402,86 +572,38 @@ const resetForm = () => {
   button {
     min-width: 100px;
     padding: 0.75rem 1.5rem;
+    font-weight: 500;
   }
 
   .btn-secondary {
-    background-color: var(--tertiary-bg);
+    background-color: var(--bg-body);
     border: 1px solid var(--border-color);
+    color: var(--text-color-3);
     transition: all .3s ease;
 
     &:hover {
-      box-shadow: 0 2px 2px rgba(46, 85, 64, .5);
+      box-shadow: 0 2px 4px rgba(var(--primary-green-color-rgb), 0.3);
+      transform: translateY(-1px);
     }
   }
 
   .btn-primary {
     background-color: var(--primary-green-color);
-    color: var(--text-color);
+    color: var(--btn-primary-text);
+    border: 1px solid transparent;
+    transition: all .3s ease;
+
+    &:hover:not(:disabled) {
+      background-color: var(--btn-hover-green);
+      box-shadow: 0 2px 8px rgba(var(--primary-green-color-rgb), 0.3);
+      transform: translateY(-1px);
+    }
 
     &:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
-  }
-}
-
-.preview-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.image-preview {
-  width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid var(--border-color);
-  position: relative;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.btn-remove-image {
-  width: 100%;
-  padding: 0.5rem;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #bb2d3b;
-  }
-}
-
-.no-preview {
-  width: 100%;
-  min-height: 200px;
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--text-secondary-clr);
-  opacity: 0.6;
-
-  svg {
-    opacity: 0.5;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.9rem;
   }
 }
 
@@ -500,7 +622,7 @@ const resetForm = () => {
   opacity: 0;
 
   .modal-container {
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
 }
 
@@ -510,44 +632,75 @@ const resetForm = () => {
     font-size: 1rem;
   }
 
-  .form-actions button {
-    min-width: 80px;
-    font-size: 0.85rem;
+  .form-actions {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+      min-width: unset;
+      font-size: 0.95rem;
+    }
+  }
+
+  .upload-zone .image-preview img {
+    height: 250px;
+  }
+
+  .upload-zone .upload-content {
+    padding: 1.5rem;
+
+    svg {
+      width: 48px;
+      height: 48px;
+    }
   }
 }
 
 @media (min-width: 768px) {
   .modal-container {
-    max-width: 85vw;
+    max-width: 90vw;
+    border-radius: 12px;
   }
 
   .modal-body {
     flex-direction: row;
     gap: 2rem;
+    padding: 2rem;
   }
 
-  .form-section,
+  .form-section {
+    flex: 1.3;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-green);
+    padding: 12px;
+  }
+
   .preview-section {
-    width: 50%;
+    flex: 1;
+    position: sticky;
+    top: 0;
   }
 
-  .image-preview {
+  .upload-zone .image-preview img {
+    height: 100%;
+    min-height: 200px;
     max-height: 400px;
+  }
+
+  .upload-zone .upload-content {
+    min-height: 200px;
   }
 }
 
 @media (min-width: 992px) {
   .modal-container {
-    width: 60vw;
-    max-width: 1200px;
+    width: 65vw;
+    max-width: 1100px;
   }
 
   .modal-header h5 {
     font-size: 1.4rem;
-  }
-
-  .image-preview {
-    max-height: 500px;
   }
 }
 
@@ -558,6 +711,18 @@ const resetForm = () => {
 
   .modal-header h5 {
     font-size: 1.5rem;
+  }
+}
+
+// Mejoras de accesibilidad
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 </style>

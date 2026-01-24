@@ -300,7 +300,7 @@ const handleDelete = async () => {
 
 // Panel de filtros
 .filter-panel {
-  background: var(--tertiary-bg);
+  background: #eff1f3;
   padding: 1.25rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -323,7 +323,6 @@ const handleDelete = async () => {
       align-items: center;
       gap: 0.5rem;
       padding: 0.65rem 1rem;
-      background: var(--bg-body);
       border: 2px solid var(--border-color);
       border-radius: 6px;
       color: var(--text-secondary-clr);
@@ -368,7 +367,7 @@ const handleDelete = async () => {
 .page-header {
   position: sticky;
   top: var(--top-var);
-  background: #f0f0f0;
+  background: var(--content-bg);
   z-index: 200;
   display: flex;
   justify-content: space-between;
@@ -547,7 +546,6 @@ const handleDelete = async () => {
 
     .btn-delete {
       flex: 1;
-      background-color: #dc3545;
       color: white;
       padding: 0.65rem 1rem;
       font-weight: 500;

@@ -4,7 +4,7 @@
       <div class="h-100">
         <div class="logo-section text-center mt-5">
           <div class="logo-container" data-aos="fade-down" data-aos-duration="800">
-            <img src="/logo.png" alt="logo" />
+            <img src="/logo.webp" alt="logo" />
           </div>
           <h2 class="association-name" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">ASIREA</h2>
         </div>

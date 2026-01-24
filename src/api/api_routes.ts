@@ -7,7 +7,8 @@ const localPaths = {
     proyectos: "/proyecto",
     informe: "/informe",
     ficha_tecnica: "/fichaTecnica",
-    junta_directiva: "/miembroDeJunta"
+    junta_directiva: "/miembroDeJunta",
+    administrativo: "/administrativo"
 }
 const prodPaths = {
     singIn: "",
