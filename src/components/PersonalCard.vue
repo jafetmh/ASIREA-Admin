@@ -32,14 +32,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ButtonComponent from './ButtonComponent.vue';
-
-interface Personal {
-  id: number;
-  foto?: string;
-  nombre: string;
-  ocupacion: string;
-  puesto: string;
-}
+import { type Personal } from '@/interfaces/Personal';
 
 interface Props {
   person: Personal;

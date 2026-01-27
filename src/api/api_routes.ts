@@ -8,7 +8,9 @@ const localPaths = {
     informe: "/informe",
     ficha_tecnica: "/fichaTecnica",
     junta_directiva: "/miembroDeJunta",
-    administrativo: "/administrativo"
+    junta_directiva_inactivos: "/miembroDeJunta/inactivos",
+    administrativo: "/administrativo",
+    administrativo_inactivos: "/administrativo/inactivos"
 }
 const prodPaths = {
     singIn: "",
@@ -18,7 +20,10 @@ const prodPaths = {
     proyectos: "",
     informe: "",
     ficha_tecnica: "",
-    junta_directiva: ""
+    junta_directiva: "",
+    junta_directiva_inactivos: "",
+    administrativo: "",
+    administrativo_inactivos: ""
 }
 
 export const apiRoutes = import.meta.env.DEV?localPaths:prodPaths;

@@ -23,13 +23,9 @@
                   <label for="titulo">Título</label>
                 </div>
 
-                <div id="file">
-                  <div class="form-floating">
-                    <label for="imagen">Imagen/Portada</label>
-                    <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
-                      class="form-control file-input" />
-                  </div>
-                </div>
+                <!-- Input oculto para imagen -->
+                <input type="file" id="imagen" ref="imageInput" accept="image/*" @change="onImageSelected"
+                  style="display: none;" />
 
                 <div class="form-floating">
                   <textarea id="descripcion" class="form-control" v-model="formData.descripcion"
@@ -46,6 +42,13 @@
                     <option value="Ficha Tecnica">Ficha Técnica</option>
                   </select>
                   <label for="cat">Categoria</label>
+                </div>
+                <div class="importante-toggle">
+                  <label>Marcar como importante</label>
+                  <div class="switch-container">
+                    <input type="checkbox" id="importante-switch" v-model="formData.importante" class="switch-input" />
+                    <label for="importante-switch" class="switch-label"></label>
+                  </div>
                 </div>
                 <div class="with-document">
                   <label>Incluir archivo/documento</label>
@@ -69,20 +72,52 @@
           </div>
 
           <div class="preview-section">
-            <div v-if="imagePreview" class="image-preview">
-              <img :src="imagePreview" alt="Preview" />
-            </div>
-            <div v-else class="no-preview">
-              <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px"
-                fill="currentColor">
-                <path
-                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z" />
-              </svg>
-              <p>Sin imagen</p>
+            <!-- Zona de upload interactiva -->
+            <div class="upload-zone" :class="{ 'has-image': imagePreview }" @click="triggerImageInput">
+              <!-- Placeholder cuando no hay imagen -->
+              <div v-if="!imagePreview" class="upload-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M21 14V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5v-1.59l3-3 1.29 1.29c.39.39 1.02.39 1.41 0l5.29-5.29 3 3V14h2Zm-4.29-5.71a.996.996 0 0 0-1.41 0l-5.29 5.29-1.29-1.29a.996.996 0 0 0-1.41 0l-2.29 2.29V5h14v5.59L16.73 8.3Z">
+                  </path>
+                  <path d="M8.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M21 16h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path>
+                </svg>
+                <p>
+                  <strong>Clic para agregar portada</strong>
+                  o arrastra una imagen aquí
+                </p>
+                <small class="file-help">Formatos: JPG, PNG, GIF, WEBP</small>
+              </div>
+
+              <!-- Preview cuando hay imagen -->
+              <div v-else class="image-preview-container" @click.stop>
+                <img :src="imagePreview" alt="Preview" />
+                <div class="image-actions">
+                  <button type="button" class="btn-change-image" @click="triggerImageInput">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        d="M21 14V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5v-1.59l3-3 1.29 1.29c.39.39 1.02.39 1.41 0l5.29-5.29 3 3V14h2Zm-4.29-5.71a.996.996 0 0 0-1.41 0l-5.29 5.29-1.29-1.29a.996.996 0 0 0-1.41 0l-2.29 2.29V5h14v5.59L16.73 8.3Z">
+                      </path>
+                      <path d="M8.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M21 16h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path>
+                    </svg>
+                    Cambiar
+                  </button>
+                  <button type="button" class="btn-remove-image" @click="removeImage">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z">
+                      </path>
+                    </svg>
+                    Eliminar
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div v-if="documentEnabled && documentUrl" class="document-actions">
-              <button @click="openDocument" class="btn-document">Revisar documento
+              <button type="button" @click="openDocument" class="btn-document">Revisar documento
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                     stroke-width="1.5" d="m9 5l6 7l-6 7" />
@@ -118,6 +153,7 @@ interface FormData {
   imagenUrl?: string;
   documentoUrl?: string;
   documentEnabled?: boolean;
+  importante?: boolean;
 }
 
 interface Props {
@@ -143,7 +179,8 @@ const formData = reactive<FormData>({
   descripcion: '',
   categoria: '',
   imagen: undefined,
-  documento: undefined
+  documento: undefined,
+  importante: false
 });
 
 const imageInput = ref<HTMLInputElement | null>(null);
@@ -158,6 +195,7 @@ watch(() => props.data, (newData) => {
     formData.titulo = newData.titulo || '';
     formData.descripcion = newData.descripcion || '';
     formData.categoria = newData.categoria || '';
+    formData.importante = newData.importante || false;
 
     if (newData.imagenUrl) {
       imagePreview.value = newData.imagenUrl;
@@ -175,12 +213,24 @@ watch(() => props.data, (newData) => {
   }
 }, { immediate: true });
 
+const triggerImageInput = () => {
+  imageInput.value?.click();
+};
+
 const onImageSelected = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files[0]) {
     const file = input.files[0];
     formData.imagen = file;
     imagePreview.value = URL.createObjectURL(file);
+  }
+};
+
+const removeImage = () => {
+  formData.imagen = undefined;
+  imagePreview.value = '';
+  if (imageInput.value) {
+    imageInput.value.value = '';
   }
 };
 
@@ -215,6 +265,7 @@ const resetForm = () => {
   formData.categoria = '';
   formData.imagen = undefined;
   formData.documento = undefined;
+  formData.importante = false;
   imagePreview.value = '';
   formData.imagenUrl = '';
   documentUrl.value = '';
@@ -370,6 +421,7 @@ const resetForm = () => {
   border-color: var(--primary-green-color);
 }
 
+.importante-toggle,
 .with-document {
   display: flex;
   justify-content: space-between;
@@ -378,6 +430,10 @@ const resetForm = () => {
   background-color: var(--tertiary-bg);
   border-radius: 6px;
   border: 1px solid var(--border-color);
+}
+
+.importante-toggle,
+.with-document {
 
   label {
     font-size: 0.9rem;
@@ -527,40 +583,147 @@ select option {
   gap: 1rem;
 }
 
-.image-preview {
-  width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
+// Zona de upload interactiva
+.upload-zone {
+  border: 2px dashed var(--primary-green-color);
+  border-radius: 12px;
+  background: var(--form-input-bg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
-  border: 2px solid var(--border-color);
+  min-height: 200px;
 
-  img {
+  &:hover:not(.has-image) {
+    border-color: var(--btn-hover-green);
+    background: var(--tertiary-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-green-color-rgb), 0.15);
+  }
+
+  &.has-image {
+    border-style: solid;
+    padding: 0;
+    cursor: default;
+    border-color: var(--border-color);
+  }
+
+  .upload-content {
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+
+    svg {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+      color: var(--primary-green-color);
+      transition: all 0.3s ease;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text-secondary-clr);
+      font-size: 0.9rem;
+      line-height: 1.5;
+
+      strong {
+        color: var(--primary-green-color);
+        display: block;
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+      }
+    }
+
+    .file-help {
+      display: block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      color: var(--text-secondary-clr);
+    }
+  }
+
+  &:hover:not(.has-image) .upload-content svg {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+
+  .image-preview-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+
+    img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .image-actions {
+      opacity: 1;
+    }
   }
 }
 
-.no-preview {
-  width: 100%;
-  min-height: 200px;
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
+.btn-change-image,
+.btn-remove-image {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--text-secondary-clr);
-  opacity: 0.6;
+  gap: 0.375rem;
 
   svg {
-    opacity: 0.5;
+    width: 18px;
+    height: 18px;
   }
+}
 
-  p {
-    margin: 0;
-    font-size: 0.9rem;
+.btn-change-image {
+  background: var(--card-bg-solid);
+  color: var(--primary-green-color);
+
+  &:hover {
+    background: var(--bg-body);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.btn-remove-image {
+  background: var(--error-color, #dc3545);
+  color: white;
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
   }
 }
 
@@ -573,12 +736,17 @@ select option {
     background-color: var(--tertiary-bg);
     color: var(--text-secondary-clr);
     padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
 
     &:hover {
       background-color: var(--nav-link-active-hover);
+      transform: translateY(-1px);
     }
   }
-
 }
 
 // Transiciones
@@ -661,6 +829,45 @@ select option {
   }
 }
 
+@include respond-to(mobile-xs) {
+  .upload-zone {
+    min-height: 180px;
+
+    .upload-content {
+      padding: 1.5rem;
+      min-height: 180px;
+
+      svg {
+        width: 40px;
+        height: 40px;
+      }
+
+      p {
+        font-size: 0.85rem;
+
+        strong {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .image-preview-container img {
+      height: 200px;
+    }
+  }
+
+  .btn-change-image,
+  .btn-remove-image {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
 @include respond-to(tablet) {
   .modal-container {
     max-width: 85vw;
@@ -676,8 +883,8 @@ select option {
     width: 50%;
   }
 
-  .image-preview {
-    max-height: 400px;
+  .upload-zone .image-preview-container img {
+    height: 320px;
   }
 }
 
@@ -691,8 +898,8 @@ select option {
     font-size: 1.4rem;
   }
 
-  .image-preview {
-    max-height: 500px;
+  .upload-zone .image-preview-container img {
+    height: 380px;
   }
 }
 

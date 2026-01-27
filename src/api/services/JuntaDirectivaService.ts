@@ -2,6 +2,7 @@ import api from "@/utils/axios";
 import { apiRoutes } from "../api_routes";
 
 const ulrBaseJunta = apiRoutes.junta_directiva;
+const urlInactivos = apiRoutes.junta_directiva_inactivos;
 
 const getMembers = async () => {
    try {
@@ -13,7 +14,17 @@ const getMembers = async () => {
   }
 }
 
-const getMember = async (id: string) => {
+const getMembersInactivos = async () => {
+  try {
+    const response = await api.get(urlInactivos);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+const getMember = async (id: number) => {
     try {
       const response = await api.get(`${ulrBaseJunta}/${id}`);
       return response.data;
@@ -33,7 +44,7 @@ const getMember = async (id: string) => {
     }
   }
 
-  const updateMember = async (id: string, member: FormData) => {
+  const updateMember = async (id: number, member: FormData) => {
     try {
       const response = await api.put(`${ulrBaseJunta}/${id}`, member);
       return response.data;
@@ -43,7 +54,7 @@ const getMember = async (id: string) => {
     }
   }
 
-  const deleteMember = async (id:string) => {
+  const deleteMember = async (id: number) => {
     try {
       const response = await api.delete(`${ulrBaseJunta}/${id}`);
       return response.data;
@@ -53,4 +64,4 @@ const getMember = async (id: string) => {
     }
   }
 
-  export {getMembers, getMember, addMember, updateMember, deleteMember}
+  export { getMembers, getMembersInactivos, getMember, addMember, updateMember, deleteMember }

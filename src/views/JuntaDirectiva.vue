@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
 import JuntaDirectivaForm from '@/components/JuntaDirectivaForm.vue';
 import { type Member } from '@/interfaces/Member';
 import { addMember, deleteMember, getMembers, updateMember } from '@/api/services/JuntaDirectivaService';
@@ -33,7 +34,7 @@ const openViewModal = (member: Member) => {
   showModal.value = true;
 };
 
-// Cargar miembros desde la API
+// Cargar miembros desde la API (la API ya filtra por activos)
 const loadMembers = async () => {
   isLoading.value = true;
   try {
@@ -111,25 +112,36 @@ onMounted(() => {
     <!-- Header -->
     <div class="header-section">
       <div class="header-content">
-        <div class="title-group">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
-            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
-            <path
-              d="M12 11c1.71 0 3-1.29 3-3s-1.29-3-3-3-3 1.29-3 3 1.29 3 3 3m0-4c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1m1 5h-2c-2.76 0-5 2.24-5 5v.5c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5V17c0-2.76-2.24-5-5-5m-5 5c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3zm-1.5-6c.47 0 .9-.12 1.27-.33a5.03 5.03 0 0 1-.42-4.52C7.09 6.06 6.8 6 6.5 6 5.06 6 4 7.06 4 8.5S5.06 11 6.5 11m-.39 1H5.5C3.57 12 2 13.57 2 15.5v1c0 .28.22.5.5.5H4c0-1.96.81-3.73 2.11-5m11.39-1c1.44 0 2.5-1.06 2.5-2.5S18.94 6 17.5 6c-.31 0-.59.06-.85.15a5.03 5.03 0 0 1-.42 4.52c.37.21.79.33 1.27.33m1 1h-.61A6.97 6.97 0 0 1 20 17h1.5c.28 0 .5-.22.5-.5v-1c0-1.93-1.57-3.5-3.5-3.5">
-            </path>
-          </svg>
-          <h2 class="main-title">Junta Directiva</h2>
+        <div class="title-wrapper">
+          <div class="title-group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 11c1.71 0 3-1.29 3-3s-1.29-3-3-3-3 1.29-3 3 1.29 3 3 3m0-4c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1m1 5h-2c-2.76 0-5 2.24-5 5v.5c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5V17c0-2.76-2.24-5-5-5m-5 5c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3zm-1.5-6c.47 0 .9-.12 1.27-.33a5.03 5.03 0 0 1-.42-4.52C7.09 6.06 6.8 6 6.5 6 5.06 6 4 7.06 4 8.5S5.06 11 6.5 11m-.39 1H5.5C3.57 12 2 13.57 2 15.5v1c0 .28.22.5.5.5H4c0-1.96.81-3.73 2.11-5m11.39-1c1.44 0 2.5-1.06 2.5-2.5S18.94 6 17.5 6c-.31 0-.59.06-.85.15a5.03 5.03 0 0 1-.42 4.52c.37.21.79.33 1.27.33m1 1h-.61A6.97 6.97 0 0 1 20 17h1.5c.28 0 .5-.22.5-.5v-1c0-1.93-1.57-3.5-3.5-3.5">
+              </path>
+            </svg>
+            <h2 class="main-title">Junta Directiva</h2>
+          </div>
+          <p class="subtitle">Gestión de miembros activos de la junta directiva</p>
         </div>
-        <button class="btn-add" @click="handleAdd">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
-            <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z">
-            </path>
-          </svg>
-          Agregar Miembro
-        </button>
+
+        <div class="header-actions">
+          <button class="btn-add" @click="handleAdd">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z">
+              </path>
+            </svg>
+            Agregar Miembro
+          </button>
+          <RouterLink to="/admin/miembros-inactivos" class="btn-inactivos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M15 11h7v2h-7zm1 4h6v2h-6zm-2-8h8v2h-8zM4 19h10v-1c0-2.757-2.243-5-5-5H7c-2.757 0-5 2.243-5 5v1h2zm4-7c1.995 0 3.5-1.505 3.5-3.5S9.995 5 8 5 4.5 6.505 4.5 8.5 6.005 12 8 12" />
+            </svg>
+            Ver Miembros Inactivos
+          </RouterLink>
+        </div>
       </div>
-      <p class="subtitle">Gestión de miembros de la junta directiva</p>
     </div>
 
     <!-- Members Grid -->
@@ -161,8 +173,10 @@ onMounted(() => {
 
           <!-- Action Buttons -->
           <div class="action-buttons">
-            <ButtonComponent :is-icon="Pencil" label="Actualizar" :rounded="false" @click="openViewModal(member)" class="btn-view" />
-            <ButtonComponent :is-icon="DeleteMember" label="Eliminar" :rounded="false" @click="openDeleteConfirm(member)" class="btn-delete" />
+            <ButtonComponent :is-icon="Pencil" label="Actualizar" :rounded="false" @click="openViewModal(member)"
+              class="btn-view" />
+            <ButtonComponent :is-icon="DeleteMember" label="Eliminar" :rounded="false"
+              @click="openDeleteConfirm(member)" class="btn-delete" />
           </div>
         </div>
       </div>
@@ -177,7 +191,7 @@ onMounted(() => {
           d="M4 8c0 2.28 1.72 4 4 4s4-1.72 4-4-1.72-4-4-4-4 1.72-4 4m6 0c0 1.18-.82 2-2 2s-2-.82-2-2 .82-2 2-2 2 .82 2 2M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1m4-5h2c1.65 0 3 1.35 3 3H4c0-1.65 1.35-3 3-3m14-3.5c0-2-1.5-3.5-3.5-3.5S14 9.5 14 11.5s1.5 3.5 3.5 3.5c.62 0 1.18-.16 1.67-.42l2.12 2.12 1.41-1.41-2.12-2.12c.26-.49.42-1.05.42-1.67M17.5 13c-.88 0-1.5-.62-1.5-1.5s.62-1.5 1.5-1.5 1.5.62 1.5 1.5-.62 1.5-1.5 1.5">
         </path>
       </svg>
-      <h4 class="empty-title">No hay miembros registrados</h4>
+      <h4 class="empty-title">No hay miembros activos registrados</h4>
       <p class="empty-text">Comienza agregando el primer miembro de la junta directiva</p>
       <button class="btn-add-empty" @click="handleAdd">
         Agregar Primer Miembro
@@ -207,9 +221,17 @@ onMounted(() => {
 
 .header-content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .title-group {
@@ -245,6 +267,32 @@ onMounted(() => {
 
 .btn-add:hover {
   background-color: #234a3d;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-inactivos {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 2px solid #dee2e6;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-inactivos:hover {
+  background-color: #dee2e6;
+  color: #495057;
 }
 
 .subtitle {
@@ -399,12 +447,12 @@ onMounted(() => {
 }
 
 .empty-title {
-  color: #6c757d;
+  color: var(--title-color);
   margin-bottom: 0.5rem;
 }
 
 .empty-text {
-  color: #adb5bd;
+  color: var(--subtitle-color);
   margin-bottom: 1.5rem;
 }
 
@@ -465,5 +513,66 @@ onMounted(() => {
 
 .btn-close-modal:hover {
   background-color: #5a6268;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .junta-directiva-container {
+    padding: 1rem;
+  }
+
+  .header-content {
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .btn-add,
+  .btn-inactivos {
+    flex: 1;
+    min-width: 140px;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .title-group svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions {
+    flex-direction: column;
+  }
+
+  .btn-add,
+  .btn-inactivos {
+    width: 100%;
+  }
+
+  .main-title {
+    font-size: 1.25rem;
+  }
+
+  .title-group svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+  }
 }
 </style>

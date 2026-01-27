@@ -185,7 +185,7 @@ onMounted(() => {
 
 .user-icon {
   padding: auto;
-  border: 2px solid #bbb8b8;
+  border: 2.5px solid #bbb8b8;
   border-radius: 50%;
 
   >svg {

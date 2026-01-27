@@ -31,7 +31,7 @@ const useAuthStore = defineStore('auth', {
             this.token = response.token;
             this.user = response.user;
             this.isAuthenticated = true;
-            router.push('admin/init')
+            router.push('admin/home')
         },
          logout(): void {
             this.user = null,

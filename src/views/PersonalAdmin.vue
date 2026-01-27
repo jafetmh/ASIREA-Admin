@@ -17,6 +17,12 @@
 
     <div class="page-actions">
       <ButtonComponent label="Añadir Personal Administrativo" :rounded="true" class="btn-add" @click="openAddModal" />
+      <RouterLink to="/admin/personal-inactivo" class="btn-inactivos">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M15 11h7v2h-7zm1 4h6v2h-6zm-2-8h8v2h-8zM4 19h10v-1c0-2.757-2.243-5-5-5H7c-2.757 0-5 2.243-5 5v1h2zm4-7c1.995 0 3.5-1.505 3.5-3.5S9.995 5 8 5 4.5 6.505 4.5 8.5 6.005 12 8 12" />
+        </svg>
+        Ver Personal Inactivo
+      </RouterLink>
     </div>
 
     <!-- Estado vacío -->
@@ -26,7 +32,7 @@
           <path d="M10 13H8c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5m-5 5c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3zm7.73-11.49c-.08-.22-.19-.42-.3-.62v-.01c-.69-1.14-1.93-1.89-3.42-1.89-2.28 0-4 1.72-4 4s1.72 4 4 4c1.49 0 2.73-.74 3.42-1.89v-.01c.12-.2.22-.4.3-.62.02-.06.03-.12.05-.18.06-.17.11-.34.15-.52.05-.25.07-.51.07-.78s-.03-.53-.07-.78c-.03-.18-.09-.35-.15-.52-.02-.06-.03-.12-.05-.18M9 10c-1.18 0-2-.82-2-2s.82-2 2-2 2 .82 2 2-.82 2-2 2m6 0q-.165 0-.33-.03c-.22.66-.56 1.27-.98 1.81.41.13.84.22 1.31.22 2.28 0 4-1.72 4-4s-1.72-4-4-4c-.47 0-.9.09-1.31.22.43.53.76 1.14.98 1.81.11-.01.21-.03.33-.03 1.18 0 2 .82 2 2s-.82 2-2 2m1 3h-1.11c.6.58 1.08 1.27 1.44 2.03C17.83 15.2 19 16.46 19 18h-2v1c0 .35-.07.69-.18 1H20c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5" />
         </svg>
       </div>
-      <h3>No hay personal registrado</h3>
+      <h3>No hay personal activo registrado</h3>
       <p>Comienza agregando un nuevo miembro del personal administrativo.</p>
       <ButtonComponent label="Agregar Personal" :rounded="true" class="btn-add-empty" @click="openAddModal" />
     </div>
@@ -47,6 +53,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import PersonalCard from '@/components/PersonalCard.vue';
 import PersonalAdminForm from '@/components/PersonalAdminForm.vue';
@@ -70,7 +77,7 @@ const isLoading = ref(false);
 const showDeleteDialog = ref(false);
 const personalToDelete = ref<Personal | null>(null);
 
-// Cargar lista de personal desde la API
+// Cargar lista de personal desde la API (la API ya filtra por activos)
 const loadPersonalList = async () => {
   isLoading.value = true;
   try {
@@ -250,6 +257,7 @@ onMounted(() => {
 .page-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 1rem;
   margin-bottom: 2rem;
 
   .btn-add {
@@ -265,6 +273,27 @@ onMounted(() => {
       background-color: var(--btn-hover-green);
       box-shadow: 0 2px 8px rgba(var(--primary-green-color-rgb), 0.3);
       transform: translateY(-1px);
+    }
+  }
+
+  .btn-inactivos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--secondary-bg);
+    color: var(--text-secondary-clr);
+    border: 2px solid var(--btn-secondary);
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--border-color);
+      color: var(--text-color-1);
     }
   }
 }
@@ -289,7 +318,7 @@ onMounted(() => {
   .empty-icon {
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, var(--bg-green-1) 0%, var(--bg-green) 100%);
+    background: #fff;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -345,12 +374,17 @@ onMounted(() => {
     }
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
+  .page-actions {
+    flex-wrap: wrap;
+    justify-content: center;
 
-    .btn-add {
-      width: 100%;
+    .btn-add,
+    .btn-inactivos {
+      flex: 1;
+      min-width: 160px;
+      justify-content: center;
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
     }
   }
 
@@ -377,6 +411,40 @@ onMounted(() => {
     }
 
     p {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .page-actions {
+    flex-direction: column;
+
+    .btn-add,
+    .btn-inactivos {
+      width: 100%;
+    }
+  }
+
+  .hero-header {
+    flex-direction: column;
+    text-align: center;
+
+    .hero-icon {
+      width: 60px;
+      height: 60px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .hero-content h1 {
+      font-size: 1.25rem;
+    }
+
+    .hero-content .subtitle {
       font-size: 0.875rem;
     }
   }

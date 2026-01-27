@@ -12,7 +12,7 @@
       </div>
       <h2>Publicaciones</h2>
     </div>
-    <ButtonComponent label="Crear publicación" :strong-label="true" :rounded="false" @click="openCreateModal"
+    <ButtonComponent label="Crear publicación" :strong-label="true" :rounded="true" @click="openCreateModal"
       class="btn-create" />
   </div>
 
@@ -78,16 +78,17 @@
         </div>
       </div>
     </div>
-    <div v-if="publications.length == 0 && !loading"
-      class="d-flex flex-column justify-content-center align-items-center empty">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
-        <path fill="currentColor"
-          d="M12 4.75a7.25 7.25 0 1 0 0 14.5a7.25 7.25 0 0 0 0-14.5M3.25 12a8.75 8.75 0 1 1 17.5 0a8.75 8.75 0 0 1-17.5 0" />
-        <path fill="currentColor"
-          d="M19.31 20.543a.75.75 0 0 0 1.06-.025c2.092-2.193 3.38-5.203 3.38-8.518s-1.288-6.325-3.38-8.518a.75.75 0 0 0-1.086 1.036c1.832 1.92 2.966 4.56 2.966 7.482c0 2.921-1.134 5.563-2.966 7.482a.75.75 0 0 0 .025 1.06m-14.62 0a.75.75 0 0 0 .026-1.06C2.884 17.562 1.75 14.92 1.75 12s1.134-5.563 2.966-7.482A.75.75 0 0 0 3.63 3.482C1.538 5.675.25 8.685.25 12s1.288 6.325 3.38 8.518a.75.75 0 0 0 1.06.025M12 7c-.736 0-1.313.649-1.244 1.4l.494 4.15a.76.76 0 0 0 .75.7a.76.76 0 0 0 .75-.7l.494-4.15C13.314 7.65 12.736 7 12 7m0 10a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5"
-          opacity="0.5" />
-      </svg>
-      <p>Sin registros...</p>
+    <!-- Estado vacío -->
+    <div v-if="publications.length === 0 && !loading" class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 24 24">
+          <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+          <path d="M6 15h8v2H6zm0-4h12v2H6zm0-4h12v2H6z"></path>
+          <path d="M4 21h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2M4 5h16v14H4z"></path>
+        </svg>
+      </div>
+      <h3>No hay publicaciones registradas</h3>
+      <p>Comienza agregando una nueva publicación usando el botón en el menú lateral.</p>
     </div>
     <div v-if="loading" class="loader-wrapper backdrop">
       <SecondLoaderComponent />
@@ -206,13 +207,13 @@ const handleSubmit = async (data: any) => {
     const formData = new FormData();
     formData.append('titulo', data.titulo);
     formData.append('descripcion', data.descripcion);
-
     //validar campo categoria
     if (!data.categoria) {
       console.error('La categoría es requerida');
       return;
     }
     formData.append('categoria', data.categoria);
+    formData.append('importante', data.importante)
     if (data.imagen) {
       formData.append('imagenArchivo', data.imagen);
     }
@@ -293,9 +294,74 @@ const handleDelete = async () => {
   padding: 2rem;
   min-height: calc(100vh - 62.7px);
   background-color: #F0F0F0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Crect stroke='%23F0F0F0' stroke-width='.5' width='1' height='1' id='s'/%3E%3Cpattern id='a' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cuse fill='%23eeeeee' href='%23s' y='2'/%3E%3Cuse fill='%23eeeeee' href='%23s' x='1' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s' x='2' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='2'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='1' y='1'/%3E%3C/pattern%3E%3Cpattern id='b' width='7' height='11' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s'/%3E%3Cuse href='%23s' y='5' /%3E%3Cuse href='%23s' x='1' y='10'/%3E%3Cuse href='%23s' x='2' y='1'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='8'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='5' y='2'/%3E%3Cuse href='%23s' x='5' y='6'/%3E%3Cuse href='%23s' x='6' y='9'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='h' width='5' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s' y='5'/%3E%3Cuse href='%23s' y='8'/%3E%3Cuse href='%23s' x='1' y='1'/%3E%3Cuse href='%23s' x='1' y='9'/%3E%3Cuse href='%23s' x='1' y='12'/%3E%3Cuse href='%23s' x='2'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='2'/%3E%3Cuse href='%23s' x='3' y='6'/%3E%3Cuse href='%23s' x='3' y='11'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='4' y='10'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='c' width='17' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e4e4e4'%3E%3Cuse href='%23s' y='11'/%3E%3Cuse href='%23s' x='2' y='9'/%3E%3Cuse href='%23s' x='5' y='12'/%3E%3Cuse href='%23s' x='9' y='4'/%3E%3Cuse href='%23s' x='12' y='1'/%3E%3Cuse href='%23s' x='16' y='6'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='d' width='19' height='17' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23F0F0F0'%3E%3Cuse href='%23s' y='9'/%3E%3Cuse href='%23s' x='16' y='5'/%3E%3Cuse href='%23s' x='14' y='2'/%3E%3Cuse href='%23s' x='11' y='11'/%3E%3Cuse href='%23s' x='6' y='14'/%3E%3C/g%3E%3Cg fill='%23e1e1e1'%3E%3Cuse href='%23s' x='3' y='13'/%3E%3Cuse href='%23s' x='9' y='7'/%3E%3Cuse href='%23s' x='13' y='10'/%3E%3Cuse href='%23s' x='15' y='4'/%3E%3Cuse href='%23s' x='18' y='1'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='e' width='47' height='53' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='2' y='5'/%3E%3Cuse href='%23s' x='16' y='38'/%3E%3Cuse href='%23s' x='46' y='42'/%3E%3Cuse href='%23s' x='29' y='20'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='f' width='59' height='71' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='33' y='13'/%3E%3Cuse href='%23s' x='27' y='54'/%3E%3Cuse href='%23s' x='55' y='55'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='g' width='139' height='97' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='11' y='8'/%3E%3Cuse href='%23s' x='51' y='13'/%3E%3Cuse href='%23s' x='17' y='73'/%3E%3Cuse href='%23s' x='99' y='57'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23b)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23h)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23c)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23d)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23e)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23f)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
-  background-attachment: fixed;
-  background-size: cover;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Crect stroke='%23F0F0F0' stroke-width='.5' width='1' height='1' id='s'/%3E%3Cpattern id='a' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cuse fill='%23eeeeee' href='%23s' y='2'/%3E%3Cuse fill='%23eeeeee' href='%23s' x='1' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s' x='2' y='2'/%3E%3Cuse fill='%23ebebeb' href='%23s'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='2'/%3E%3Cuse fill='%23e9e9e9' href='%23s' x='1' y='1'/%3E%3C/pattern%3E%3Cpattern id='b' width='7' height='11' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s'/%3E%3Cuse href='%23s' y='5' /%3E%3Cuse href='%23s' x='1' y='10'/%3E%3Cuse href='%23s' x='2' y='1'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='8'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='5' y='2'/%3E%3Cuse href='%23s' x='5' y='6'/%3E%3Cuse href='%23s' x='6' y='9'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='h' width='5' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e6e6e6'%3E%3Cuse href='%23s' y='5'/%3E%3Cuse href='%23s' y='8'/%3E%3Cuse href='%23s' x='1' y='1'/%3E%3Cuse href='%23s' x='1' y='9'/%3E%3Cuse href='%23s' x='1' y='12'/%3E%3Cuse href='%23s' x='2'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='2'/%3E%3Cuse href='%23s' x='3' y='6'/%3E%3Cuse href='%23s' x='3' y='11'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='4' y='10'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='c' width='17' height='13' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23e4e4e4'%3E%3Cuse href='%23s' y='11'/%3E%3Cuse href='%23s' x='2' y='9'/%3E%3Cuse href='%23s' x='5' y='12'/%3E%3Cuse href='%23s' x='9' y='4'/%3E%3Cuse href='%23s' x='12' y='1'/%3E%3Cuse href='%23s' x='16' y='6'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='d' width='19' height='17' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%23F0F0F0'%3E%3Cuse href='%23s' y='9'/%3E%3Cuse href='%23s' x='16' y='5'/%3E%3Cuse href='%23s' x='14' y='2'/%3E%3Cuse href='%23s' x='11' y='11'/%3E%3Cuse href='%23s' x='6' y='14'/%3E%3C/g%3E%3Cg fill='%23e1e1e1'%3E%3Cuse href='%23s' x='3' y='13'/%3E%3Cuse href='%23s' x='9' y='7'/%3E%3Cuse href='%23s' x='13' y='10'/%3E%3Cuse href='%23s' x='15' y='4'/%3E%3Cuse href='%23s' x='18' y='1'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='e' width='47' height='53' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='2' y='5'/%3E%3Cuse href='%23s' x='16' y='38'/%3E%3Cuse href='%23s' x='46' y='42'/%3E%3Cuse href='%23s' x='29' y='20'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='f' width='59' height='71' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='33' y='13'/%3E%3Cuse href='%23s' x='27' y='54'/%3E%3Cuse href='%23s' x='55' y='55'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='g' width='139' height='97' patternUnits='userSpaceOnUse' patternTransform='rotate(11 1000 750) scale(50) translate(-980 -735)'%3E%3Cg fill='%232E5540'%3E%3Cuse href='%23s' x='11' y='8'/%3E%3Cuse href='%23s' x='51' y='13'/%3E%3Cuse href='%23s' x='17' y='73'/%3E%3Cuse href='%23s' x='99' y='57'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23b)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23h)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23c)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23d)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23e)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23f)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0) 70%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  >.filter-panel,
+  >.mt-3,
+  >.empty-state,
+  >.loader-wrapper {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Estado vacío
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: var(--content-bg);
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    background: #ffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    svg {
+      color: var(--primary-green-color);
+      opacity: 0.6;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--title-color);
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--text-secondary-clr);
+    margin: 0;
+    max-width: 400px;
+  }
 }
 
 // Panel de filtros
@@ -367,7 +433,7 @@ const handleDelete = async () => {
 .page-header {
   position: sticky;
   top: var(--top-var);
-  background: var(--content-bg);
+  background: var(--tertiary-bg);
   z-index: 200;
   display: flex;
   justify-content: space-between;
@@ -408,7 +474,7 @@ const handleDelete = async () => {
     background-color: var(--accent-color);
     padding: 0.75rem 1.5rem;
     font-weight: 500;
-    box-shadow: -2px 2px 5px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 2px rgba(0, 0, 0, .5);
     scale: 1;
     transition: scale 0.3s ease;
 

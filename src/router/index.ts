@@ -7,6 +7,8 @@ import PublicationsView from '@/views/PublicationsView.vue'
 import JuntaDirectiva from '@/views/JuntaDirectiva.vue'
 import useAuthStore from '@/store/authStore'
 import PersonalAdmin from '@/views/PersonalAdmin.vue'
+import PersonalInactivo from '@/views/PersonalInactivo.vue'
+import MiembrosInactivos from '@/views/MiembrosInactivos.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -36,8 +38,8 @@ const router = createRouter({
           component: UserProfile
         },
         {
-          path: 'init',
-          name: 'init',
+          path: 'home',
+          name: 'home',
           meta: { requiresAuth: true },
           component: AdminHome
         },
@@ -58,6 +60,18 @@ const router = createRouter({
           name: 'personal-admin',
           meta: { requireAuth: true},
           component: PersonalAdmin
+        },
+        {
+          path: 'personal-inactivo',
+          name: 'personal-inactivo',
+          meta: { requireAuth: true },
+          component: PersonalInactivo
+        },
+        {
+          path: 'miembros-inactivos',
+          name: 'miembros-inactivos',
+          meta: { requireAuth: true },
+          component: MiembrosInactivos
         }
       ]
     }

@@ -1,7 +1,3 @@
-export interface Personal {
-  id: number;
-  foto?: string;
-  nombre: string;
-  ocupacion: string;
-  puesto: string;
-}
+import { type BasePerson } from './BasePerson';
+
+export interface Personal extends BasePerson {}

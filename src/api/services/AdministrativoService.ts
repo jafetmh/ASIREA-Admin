@@ -2,10 +2,21 @@ import api from "@/utils/axios";
 import { apiRoutes } from "../api_routes";
 
 const urlBaseAdministrativo = apiRoutes.administrativo;
+const urlInactivos = apiRoutes.administrativo_inactivos;
 
 const getPersonalList = async () => {
   try {
     const response = await api.get(urlBaseAdministrativo);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const getPersonalInactivos = async () => {
+  try {
+    const response = await api.get(urlInactivos);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -53,4 +64,4 @@ const deletePersonal = async (id: number) => {
   }
 };
 
-export { getPersonalList, getPersonal, addPersonal, updatePersonal, deletePersonal };
+export { getPersonalList, getPersonalInactivos, getPersonal, addPersonal, updatePersonal, deletePersonal };

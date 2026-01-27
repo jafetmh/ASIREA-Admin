@@ -8,4 +8,5 @@ export interface Publication {
   imagenUrl?: string;
   documentoUrl?: string;
   fechaCreacion: string;
+  importante?: boolean;
 }

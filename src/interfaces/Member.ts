@@ -1,7 +1,3 @@
-export interface Member {
-  id?: string;
-  nombre: string;
-  puesto: string;
-  ocupacion?: string;
-  foto?: string;
-}
+import { type BasePerson } from './BasePerson';
+
+export interface Member extends BasePerson {}

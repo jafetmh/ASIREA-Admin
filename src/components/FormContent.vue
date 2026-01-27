@@ -216,7 +216,7 @@ const handleRemoveImage = () => {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background-color: var(--error-color);
+      background-color: rgba(var(--warning-rgb), 1);
       border: 2px solid var(--card-bg-solid);
       color: var(--btn-primary-text);
       display: flex;
