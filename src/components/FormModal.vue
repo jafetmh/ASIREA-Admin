@@ -33,13 +33,10 @@
                   <label for="descripcion">Contenido</label>
                 </div>
                 <div class="form-floating">
-                  <select name="" id="cat" class="form-select form-control" aria-label="Elige una categoria"
-                    v-model="formData.categoria" required>
-                    <option value="" disabled selected>Elige una categoria</option>
-                    <option value="Noticia">Noticia</option>
-                    <option value="Informe">Informe</option>
-                    <option value="Proyecto">Proyecto</option>
-                    <option value="Ficha Tecnica">Ficha Técnica</option>
+                  <select id="cat" class="form-select form-control" aria-label="Elige una categoria"
+                    v-model="formData.categoriaId" required>
+                    <option :value="null" disabled selected>Elige una categoria</option>
+                    <option v-for="cat in categorias" :key="cat.id" :value="cat.id">{{ cat.nombre }}</option>
                   </select>
                   <label for="cat">Categoria</label>
                 </div>
@@ -140,17 +137,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
 import InputComponent from './InputComponent.vue';
 import ButtonComponent from './ButtonComponent.vue';
+import PublicacionesService from '@/api/services/PublicacionesService';
+import type { Categoria } from '@/interfaces/Publication';
 
 interface FormData {
   titulo: string;
   descripcion: string;
-  categoria: string;
+  categoriaId: number | null;
   imagen?: File | string;
   documento?: File | string;
   imagenUrl?: string;
+  documentoUrl?: string;
+  documentEnabled?: boolean;
+  importante?: boolean;
+}
+
+interface PublicacionData {
+  titulo?: string;
+  descripcion?: string;
+  categoria?: Categoria;
+  imagen?: File | string;
+  documento?: File | string;
+  imagenPortadaUrl?: string;
   documentoUrl?: string;
   documentEnabled?: boolean;
   importante?: boolean;
@@ -160,7 +171,7 @@ interface Props {
   modelValue: boolean;
   title?: string;
   isEdit?: boolean;
-  data?: Partial<FormData>;
+  data?: PublicacionData;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -177,10 +188,21 @@ const emit = defineEmits<{
 const formData = reactive<FormData>({
   titulo: '',
   descripcion: '',
-  categoria: '',
+  categoriaId: null,
   imagen: undefined,
   documento: undefined,
   importante: false
+});
+
+const categorias = ref<Categoria[]>([]);
+
+onMounted(async () => {
+  try {
+    const response = await PublicacionesService.obtenerCategorias();
+    categorias.value = response.data ?? response;
+  } catch (error) {
+    console.error('Error al cargar categorías:', error);
+  }
 });
 
 const imageInput = ref<HTMLInputElement | null>(null);
@@ -194,11 +216,11 @@ watch(() => props.data, (newData) => {
   if (newData) {
     formData.titulo = newData.titulo || '';
     formData.descripcion = newData.descripcion || '';
-    formData.categoria = newData.categoria || '';
+    formData.categoriaId = newData.categoria?.id ?? null;
     formData.importante = newData.importante || false;
 
-    if (newData.imagenUrl) {
-      imagePreview.value = newData.imagenUrl;
+    if (newData.imagenPortadaUrl) {
+      imagePreview.value = newData.imagenPortadaUrl;
     } else if (typeof newData.imagen === 'string') {
       imagePreview.value = newData.imagen;
     }
@@ -262,7 +284,7 @@ const closeModal = () => {
 const resetForm = () => {
   formData.titulo = '';
   formData.descripcion = '';
-  formData.categoria = '';
+  formData.categoriaId = null;
   formData.imagen = undefined;
   formData.documento = undefined;
   formData.importante = false;

@@ -21,29 +21,17 @@
     <div class="filter-panel">
       <div class="filter-label">Filtrar por categoría:</div>
       <div class="filter-buttons">
-        <button :class="['filter-btn', { active: categoriaFiltro === 'Todas' }]" @click="limpiarFiltro">
+        <button :class="['filter-btn', { active: categoriaFiltroId === null }]" @click="limpiarFiltro">
           Todas
           <span class="badge">{{ allPublications.length }}</span>
         </button>
-        <button :class="['filter-btn', { active: categoriaFiltro === 'Noticia' }]"
-          @click="filtrarPorCategoria('Noticia')">
-          Noticias
-          <span class="badge">{{allPublications.filter(p => p.categoria === 'Noticia').length}}</span>
-        </button>
-        <button :class="['filter-btn', { active: categoriaFiltro === 'Proyecto' }]"
-          @click="filtrarPorCategoria('Proyecto')">
-          Proyectos
-          <span class="badge">{{allPublications.filter(p => p.categoria === 'Proyecto').length}}</span>
-        </button>
-        <button :class="['filter-btn', { active: categoriaFiltro === 'Informe' }]"
-          @click="filtrarPorCategoria('Informe')">
-          Informes
-          <span class="badge">{{allPublications.filter(p => p.categoria === 'Informe').length}}</span>
-        </button>
-        <button :class="['filter-btn', { active: categoriaFiltro === 'Ficha Tecnica' }]"
-          @click="filtrarPorCategoria('Ficha Tecnica')">
-          Fichas Técnicas
-          <span class="badge">{{allPublications.filter(p => p.categoria === 'Ficha Tecnica').length}}</span>
+        <button
+          v-for="cat in categorias"
+          :key="cat.id"
+          :class="['filter-btn', { active: categoriaFiltroId === cat.id }]"
+          @click="filtrarPorCategoria(cat.id)">
+          {{ cat.nombre }}
+          <span class="badge">{{ allPublications.filter(p => p.categoria?.id === cat.id).length }}</span>
         </button>
       </div>
     </div>
@@ -63,7 +51,7 @@
               </svg>
               <span>{{ formatearFecha(publication.fechaCreacion) }}</span>
             </div>
-            <img :src="publication.imagenUrl || '/noticia-default.png'" :alt="publication.titulo" />
+            <img :src="publication.imagenPortadaUrl || '/noticia-default.png'" :alt="publication.titulo" />
           </div>
           <div class="card-content">
             <h3>{{ publication.titulo }}</h3>
@@ -107,44 +95,44 @@ import { ref, onMounted } from 'vue';
 import ButtonComponent from '@/components/ButtonComponent.vue';
 import FormModal from '@/components/FormModal.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import publicacionesFactory, { type CategoriaPublicacion } from '@/api/publicacionesFactory';
-import { type Publication } from '@/interfaces/Publication';
+import PublicacionesService from '@/api/services/PublicacionesService';
+import { type Publication, type Categoria } from '@/interfaces/Publication';
 import SecondLoaderComponent from '@/components/SecondLoaderComponent.vue';
 
 const showModal = ref(false);
 const isEditMode = ref(false);
 const modalTitle = ref('');
 const selectedPublication = ref<Partial<Publication>>({});
-const allPublications = ref<Publication[]>([]); // Todas las publicaciones
-const publications = ref<Publication[]>([]); // Publicaciones filtradas
+const allPublications = ref<Publication[]>([]);
+const publications = ref<Publication[]>([]);
+const categorias = ref<Categoria[]>([]);
 const loading = ref(false);
 const showDeleteDialog = ref(false);
 const publicationToDelete = ref<Publication | null>(null);
-const categoriaFiltro = ref<CategoriaPublicacion | 'Todas'>('Todas'); // Filtro actual
+const categoriaFiltroId = ref<number | null>(null);
 
 onMounted(async () => {
-  await loadAllPublications();
+  await Promise.all([loadCategorias(), loadAllPublications()]);
 });
 
-//Carga todas las publicaciones de todas las categorías en paralelo
+
+//Cargar las categorias
+const loadCategorias = async () => {
+  try {
+    const response = await PublicacionesService.obtenerCategorias();
+    categorias.value = response.data ?? response;
+  } catch (error) {
+    console.error('Error al cargar categorías:', error);
+  }
+};
+
+//Cargar las publicaciones
 const loadAllPublications = async () => {
   try {
     loading.value = true;
-
-    const categorias = publicacionesFactory.getCategorias();
-
-    // Ejecutar todas las peticiones en paralelo
-    const promises = categorias.map(async (categoria) => {
-      const service = publicacionesFactory.getService(categoria);
-      const response = await service.obtenerPublicaciones();
-      return response.data || [];
-    });
-
-    // Esperar a que todas las peticiones terminen
-    const resultados = await Promise.all(promises);
-    allPublications.value = resultados.flat();
+    const response = await PublicacionesService.obtenerPublicaciones();
+    allPublications.value = response.data ?? response;
     aplicarFiltro();
-
   } catch (error) {
     console.error('Error al cargar publicaciones:', error);
   } finally {
@@ -152,27 +140,24 @@ const loadAllPublications = async () => {
   }
 };
 
-
-//Aplica el filtro de categoría a las publicaciones
 const aplicarFiltro = () => {
-  if (categoriaFiltro.value === 'Todas') {
+  if (categoriaFiltroId.value === null) {
     publications.value = allPublications.value;
   } else {
     publications.value = allPublications.value.filter(
-      pub => pub.categoria === categoriaFiltro.value
+      pub => pub.categoria?.id === categoriaFiltroId.value
     );
   }
 };
 
-
-// Cambia el filtro de categoría
-const filtrarPorCategoria = (categoria: CategoriaPublicacion | 'Todas') => {
-  categoriaFiltro.value = categoria;
+const filtrarPorCategoria = (categoriaId: number) => {
+  categoriaFiltroId.value = categoriaId;
   aplicarFiltro();
 };
 
 const limpiarFiltro = () => {
-  filtrarPorCategoria('Todas');
+  categoriaFiltroId.value = null;
+  aplicarFiltro();
 };
 
 function formatearFecha(fechaISO: string) {
@@ -183,8 +168,6 @@ function formatearFecha(fechaISO: string) {
     year: 'numeric'
   });
 }
-
-console.log(formatearFecha('2025-10-16')); // "16 de octubre de 2025"
 
 const openCreateModal = () => {
   isEditMode.value = false;
@@ -204,16 +187,16 @@ const handleSubmit = async (data: any) => {
   try {
     loading.value = true;
 
-    const formData = new FormData();
-    formData.append('titulo', data.titulo);
-    formData.append('descripcion', data.descripcion);
-    //validar campo categoria
-    if (!data.categoria) {
+    if (!data.categoriaId) {
       console.error('La categoría es requerida');
       return;
     }
-    formData.append('categoria', data.categoria);
-    formData.append('importante', data.importante)
+
+    const formData = new FormData();
+    formData.append('titulo', data.titulo);
+    formData.append('descripcion', data.descripcion);
+    formData.append('categoriaId', data.categoriaId.toString());
+    formData.append('importante', data.importante);
     if (data.imagen) {
       formData.append('imagenArchivo', data.imagen);
     }
@@ -221,20 +204,14 @@ const handleSubmit = async (data: any) => {
       formData.append('documentoArchivo', data.documento);
     }
 
-    // Obtener el servicio correcto según la categoría
-    const service = publicacionesFactory.getService(data.categoria as CategoriaPublicacion);
-
     if (isEditMode.value && selectedPublication.value.id) {
-      // Actualizar publicación existente
       const eliminarDocumento = !data.documentEnabled;
       formData.append('eliminarDocumento', eliminarDocumento.toString());
-
-      await service.actualizarPublicacion(selectedPublication.value.id, formData);
+      await PublicacionesService.actualizarPublicacion(selectedPublication.value.id, formData);
     } else {
-      await service.crearPublicacion(formData);
+      await PublicacionesService.crearPublicacion(formData);
     }
 
-    // Recargar publicaciones
     await loadAllPublications();
     showModal.value = false;
   } catch (error) {
@@ -250,15 +227,12 @@ const openDeleteConfirm = (publication: Publication) => {
 };
 
 const handleDelete = async () => {
-  if (!publicationToDelete.value?.id || !publicationToDelete.value?.categoria) return;
+  if (!publicationToDelete.value?.id) return;
 
   try {
     loading.value = true;
 
-    // Obtener el servicio según la categoría de la publicación a eliminar
-    const service = publicacionesFactory.getService(publicationToDelete.value.categoria);
-
-    await service.eliminarPublicacion(publicationToDelete.value.id);
+    await PublicacionesService.eliminarPublicacion(publicationToDelete.value.id);
     await loadAllPublications();
     showDeleteDialog.value = false;
     publicationToDelete.value = null;

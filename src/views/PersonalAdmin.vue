@@ -1,20 +1,22 @@
 <template>
-  <div class="personal-admin-container">
-    <!-- Hero Header -->
-    <div class="hero-header">
+  <!-- Hero Header con fondo full-width -->
+  <div class="page-header">
+    <div class="header-content">
       <div class="hero-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 24 24">
           <path
             d="M10 13H8c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5m-5 5c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3zm7.73-11.49c-.08-.22-.19-.42-.3-.62v-.01c-.69-1.14-1.93-1.89-3.42-1.89-2.28 0-4 1.72-4 4s1.72 4 4 4c1.49 0 2.73-.74 3.42-1.89v-.01c.12-.2.22-.4.3-.62.02-.06.03-.12.05-.18.06-.17.11-.34.15-.52.05-.25.07-.51.07-.78s-.03-.53-.07-.78c-.03-.18-.09-.35-.15-.52-.02-.06-.03-.12-.05-.18M9 10c-1.18 0-2-.82-2-2s.82-2 2-2 2 .82 2 2-.82 2-2 2m6 0q-.165 0-.33-.03c-.22.66-.56 1.27-.98 1.81.41.13.84.22 1.31.22 2.28 0 4-1.72 4-4s-1.72-4-4-4c-.47 0-.9.09-1.31.22.43.53.76 1.14.98 1.81.11-.01.21-.03.33-.03 1.18 0 2 .82 2 2s-.82 2-2 2m1 3h-1.11c.6.58 1.08 1.27 1.44 2.03C17.83 15.2 19 16.46 19 18h-2v1c0 .35-.07.69-.18 1H20c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5">
           </path>
         </svg>
       </div>
-      <div class="hero-content">
-        <h1>Personal Administrativo</h1>
+      <div class="hero-text">
+        <h2>Personal Administrativo</h2>
         <p class="subtitle">Gestión del personal administrativo</p>
       </div>
     </div>
+  </div>
 
+  <div class="personal-admin-container">
     <div class="page-actions">
       <ButtonComponent label="Añadir Personal Administrativo" :rounded="true" class="btn-add" @click="openAddModal" />
       <RouterLink to="/admin/personal-inactivo" class="btn-inactivos">
@@ -172,6 +174,58 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+// Hero Header con fondo full-width
+.page-header {
+  position: sticky;
+  top: var(--top-var);
+  background: var(--tertiary-bg);
+  z-index: 200;
+  padding: 1.8rem;
+  border-bottom: 2px solid var(--border-color);
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .hero-icon {
+      flex-shrink: 0;
+      padding: 12px;
+      border-radius: 5px;
+      background-color: var(--primary-green-color);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+
+      svg {
+        display: block;
+        color: #f0f0f0;
+      }
+    }
+
+    .hero-text {
+      flex: 1;
+
+      h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-color-1);
+      }
+
+      .subtitle {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.95rem;
+        color: var(--text-secondary-clr);
+      }
+    }
+  }
+}
+
 .personal-admin-container {
   position: relative;
   padding: 2rem;
@@ -179,7 +233,7 @@ onMounted(() => {
   margin: 0 auto;
   background-color: var(--content-bg);
   overflow: hidden;
-  min-height: 100vh;
+  min-height: calc(100vh - 100px);
 
   &::before {
     content: '';
@@ -202,55 +256,11 @@ onMounted(() => {
     z-index: 0;
   }
 
-  > .hero-header,
   > .page-actions,
   > .cards-grid,
   > .empty-state {
     position: relative;
     z-index: 1;
-  }
-}
-
-// Estilo Hero
-.hero-header {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-
-  .hero-icon {
-    flex-shrink: 0;
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, var(--primary-green-color) 0%, var(--btn-hover-green) 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 40px;
-      height: 40px;
-      color: var(--btn-primary-text);
-    }
-  }
-
-  .hero-content {
-    flex: 1;
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--title-color);
-      margin: 0 0 0.25rem 0;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      font-size: 1rem;
-      color: var(--text-color-1);
-      margin: 0;
-    }
   }
 }
 
@@ -362,16 +372,22 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .personal-admin-container {
-    padding: 1rem;
+  .page-header {
+    padding: 1.2rem;
+
+    .header-content {
+      .hero-text h2 {
+        font-size: 1.4rem;
+      }
+
+      .hero-text .subtitle {
+        font-size: 0.85rem;
+      }
+    }
   }
 
-  .hero-header {
-    margin-top: 20px;
-
-    .hero-content h1 {
-      font-size: 1.5rem;
-    }
+  .personal-admin-container {
+    padding: 1rem;
   }
 
   .page-actions {
@@ -417,35 +433,34 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
+  .page-header {
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+
+      .hero-icon {
+        svg {
+          width: 22px;
+          height: 22px;
+        }
+      }
+
+      .hero-text h2 {
+        font-size: 1.25rem;
+      }
+
+      .hero-text .subtitle {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
   .page-actions {
     flex-direction: column;
 
     .btn-add,
     .btn-inactivos {
       width: 100%;
-    }
-  }
-
-  .hero-header {
-    flex-direction: column;
-    text-align: center;
-
-    .hero-icon {
-      width: 60px;
-      height: 60px;
-
-      svg {
-        width: 32px;
-        height: 32px;
-      }
-    }
-
-    .hero-content h1 {
-      font-size: 1.25rem;
-    }
-
-    .hero-content .subtitle {
-      font-size: 0.875rem;
     }
   }
 }

@@ -22,9 +22,12 @@
     <div class="stats-section">
       <h2 class="section-title">Resumen de Publicaciones</h2>
       <div class="stats-grid">
-        <div class="stat-card" v-for="stat in stats" :key="stat.categoria">
+        <div class="stat-card" v-for="stat in stats" :key="stat.id">
           <div class="stat-icon" :style="{ backgroundColor: stat.color }">
-            <component :is="stat.icon" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M5 7h5v6H5zm0 8h10v2H5zm7-4h3v2h-3zm0-4h3v2h-3z" />
+              <path d="M21 18c0 .55-.45 1-1 1s-1-.45-1-1V5c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v13c0 1.65 1.35 3 3 3h16c1.65 0 3-1.35 3-3V6h-2zM4 19c-.55 0-1-.45-1-1V5h14v13c0 .35.07.69.18 1z" />
+            </svg>
           </div>
           <div class="stat-info">
             <span class="stat-value">{{ stat.count }}</span>
@@ -118,8 +121,8 @@
                   d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3.01L14.5 12l4.5 6H5z" />
               </svg>
             </div>
-            <span class="category-badge" :class="getCategoryClass(pub.categoria)">
-              {{ pub.categoria }}
+            <span class="category-badge" :class="getCategoryClass(pub.categoria?.nombre)">
+              {{ pub.categoria?.nombre }}
             </span>
             <span class="important-badge">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
@@ -153,57 +156,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, h } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import type { Publication } from '@/interfaces/Publication';
-import publicacionesFactory, { type CategoriaPublicacion } from '@/api/publicacionesFactory';
+import PublicacionesService from '@/api/services/PublicacionesService';
+
+const STAT_COLORS = ['#2e5540', '#1976d2', '#7b1fa2', '#f57c00', '#c62828', '#00796b'];
 
 // Estado
 const allPublications = ref<Publication[]>([]);
 const isLoading = ref(false);
 
-// Stats por categoría
+// Stats por categoría derivadas dinámicamente de las publicaciones
 const stats = computed(() => {
-  const categorias: { categoria: string; color: string; icon: any }[] = [
-    {
-      categoria: 'Noticias',
-      color: '#2e5540',
-      icon: h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 24, height: 24, fill: 'currentColor', viewBox: '0 0 24 24' }, [
-        h('path', { d: 'M21.57 3.18a.98.98 0 0 0-.92-.11L7.82 8H4.01c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h3.81l1 .39-.47 1.4c-.33 1 .17 2.1 1.15 2.49l3.14 1.26c.24.09.49.14.74.14.29 0 .58-.06.84-.19.5-.23.88-.66 1.05-1.18l.42-1.27 4.93 1.9c.12.04.24.07.36.07.2 0 .4-.06.57-.18.27-.19.43-.5.43-.82V4c0-.33-.16-.64-.43-.82ZM4 10h3v4H4zm9.39 9.68-3.14-1.26.44-1.32 3.15 1.21-.45 1.36ZM20 18.55 9 14.32V9.69l11-4.23z' })
-      ])
-    },
-    {
-      categoria: 'Informes',
-      color: '#1976d2',
-      icon: h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 24, height: 24, fill: 'currentColor', viewBox: '0 0 24 24' }, [
-        h('path', { d: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm4 18H6V4h7v5h5zM9 13h6v2H9zm0 4h6v2H9zm0-8h4v2H9z' })
-      ])
-    },
-    {
-      categoria: 'Proyectos',
-      color: '#7b1fa2',
-      icon: h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 24, height: 24, fill: 'currentColor', viewBox: '0 0 24 24' }, [
-        h('path', { d: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V5h14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z' })
-      ])
-    },
-    {
-      categoria: 'Fichas Técnicas',
-      color: '#f57c00',
-      icon: h('svg', { xmlns: 'http://www.w3.org/2000/svg', width: 24, height: 24, fill: 'currentColor', viewBox: '0 0 24 24' }, [
-        h('path', { d: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm4 18H6V4h7v5h5zM9 13h6v2H9zm0 4h6v2H9z' })
-      ])
+  const catMap = new Map<number, { id: number; categoria: string; color: string; count: number }>();
+  let colorIndex = 0;
+  for (const pub of allPublications.value) {
+    if (pub.categoria) {
+      if (!catMap.has(pub.categoria.id)) {
+        catMap.set(pub.categoria.id, {
+          id: pub.categoria.id,
+          categoria: pub.categoria.nombre,
+          color: STAT_COLORS[colorIndex % STAT_COLORS.length],
+          count: 0
+        });
+        colorIndex++;
+      }
+      catMap.get(pub.categoria.id)!.count++;
     }
-  ];
-
-  return categorias.map(cat => {
-    const count = allPublications.value.filter(p => {
-      if (cat.categoria === 'Noticias') return p.categoria === 'Noticia';
-      if (cat.categoria === 'Informes') return p.categoria === 'Informe';
-      if (cat.categoria === 'Proyectos') return p.categoria === 'Proyecto';
-      if (cat.categoria === 'Fichas Técnicas') return p.categoria === 'Ficha Tecnica';
-      return false;
-    }).length;
-    return { ...cat, count };
-  });
+  }
+  return Array.from(catMap.values());
 });
 
 // Publicaciones importantes (las 3 más recientes marcadas como importantes)
@@ -218,14 +199,8 @@ const importantPublications = computed(() => {
 const loadAllPublications = async () => {
   isLoading.value = true;
   try {
-    const categorias: CategoriaPublicacion[] = ['Noticia', 'Proyecto', 'Informe', 'Ficha Tecnica'];
-    const promises = categorias.map(cat => publicacionesFactory.getService(cat).obtenerPublicaciones());
-    const results = await Promise.all(promises);
-
-    allPublications.value = results.flatMap((result, index) => {
-      const data = result.data || result;
-      return Array.isArray(data) ? data.map((p: Publication) => ({ ...p, categoria: categorias[index] })) : [];
-    });
+    const response = await PublicacionesService.obtenerPublicaciones();
+    allPublications.value = response.data ?? response;
   } catch (error) {
     console.error('Error al cargar publicaciones:', error);
   } finally {

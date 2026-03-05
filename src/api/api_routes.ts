@@ -1,12 +1,9 @@
 
 const localPaths = {
     singIn: "/auth/login",
-    singInWithGoogle: "/auth/google",
     singUp: "/user/sing-up",
-    noticias: "/noticia",
-    proyectos: "/proyecto",
-    informe: "/informe",
-    ficha_tecnica: "/fichaTecnica",
+    publicaciones: "/publicaciones",
+    publicaciones_categorias: "/publicaciones/categorias",
     junta_directiva: "/miembroDeJunta",
     junta_directiva_inactivos: "/miembroDeJunta/inactivos",
     administrativo: "/administrativo",
@@ -14,12 +11,9 @@ const localPaths = {
 }
 const prodPaths = {
     singIn: "",
-    singInWithGoogle: "",
     singUp: "",
-    noticias: "",
-    proyectos: "",
-    informe: "",
-    ficha_tecnica: "",
+    publicaciones: "",
+    publicaciones_categorias: "",
     junta_directiva: "",
     junta_directiva_inactivos: "",
     administrativo: "",
