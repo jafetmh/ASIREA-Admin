@@ -34,7 +34,7 @@ button:active {
 }
 
 button {
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   transition: transform .3s ease-in-out;
   padding: 5px 20px;
 

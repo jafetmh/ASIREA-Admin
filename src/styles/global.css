@@ -16,12 +16,15 @@
 
   --primary-green-color: #2e5540;
   --primary-green-color-rgb: 46, 85, 64;
+  --primary-green-color-1: #177b45;
+  --primary-dark-color: #393a39;
   --bg-green: #f7fcf5;
   --bg-green-1: #e5f5e0;
 
   --text-color-1: #3c414a;
   --text-color-2: #b0b3c1;
   --text-color-3: #2C2C2C;
+  --text-light: #f6f6f6;
 
   --title-color: #343a40;
   --subtitle-color: #838590;
@@ -97,7 +100,7 @@ body.dark-mode {
   --tertiary-bg-1: var(--nav-link-active-color);
   --tertiary-bg-rgb: 34,37,42;
 
-  --border-color: #393e46;
+  --border-color: #afafaf;
   --border-color-1: #3d3e41;
 
   /* Variables para vistas de contenido - Dark Mode */

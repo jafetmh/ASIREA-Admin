@@ -12,7 +12,7 @@
       </div>
       <h2>Publicaciones</h2>
     </div>
-    <ButtonComponent label="Crear publicación" :strong-label="true" :rounded="true" @click="openCreateModal"
+    <ButtonComponent label="Crear publicación" :strong-label="true" @click="openCreateModal"
       class="btn-create" />
   </div>
 
@@ -25,13 +25,10 @@
           Todas
           <span class="badge">{{ allPublications.length }}</span>
         </button>
-        <button
-          v-for="cat in categorias"
-          :key="cat.id"
-          :class="['filter-btn', { active: categoriaFiltroId === cat.id }]"
-          @click="filtrarPorCategoria(cat.id)">
+        <button v-for="cat in categorias" :key="cat.id"
+          :class="['filter-btn', { active: categoriaFiltroId === cat.id }]" @click="filtrarPorCategoria(cat.id)">
           {{ cat.nombre }}
-          <span class="badge">{{ allPublications.filter(p => p.categoria?.id === cat.id).length }}</span>
+          <span class="badge">{{allPublications.filter(p => p.categoria?.id === cat.id).length}}</span>
         </button>
       </div>
     </div>
@@ -58,9 +55,9 @@
             <p class="card-description">{{ publication.descripcion }}</p>
           </div>
           <div class="card-footer">
-            <ButtonComponent label="Ver Publicación" :rounded="false" @click="openViewModal(publication)"
+            <ButtonComponent label="Ver Publicación" :rounded="true" @click="openViewModal(publication)"
               class="btn-view" />
-            <ButtonComponent label="Eliminar" :rounded="false" @click="openDeleteConfirm(publication)"
+            <ButtonComponent label="Eliminar" :rounded="true" @click="openDeleteConfirm(publication)"
               class="btn-delete" />
           </div>
         </div>
@@ -78,12 +75,9 @@
       <h3>No hay publicaciones registradas</h3>
       <p>Comienza agregando una nueva publicación usando el botón en el menú lateral.</p>
     </div>
-    <div v-if="loading" class="loader-wrapper backdrop">
+    <div v-if="loading" class="loader-wrapper">
       <SecondLoaderComponent />
     </div>
-    <FormModal v-model="showModal" :title="modalTitle" :is-edit="isEditMode" :data="selectedPublication"
-      @submit="handleSubmit" />
-
     <ConfirmDialog v-if="showDeleteDialog" :header="'Confirmar eliminación'"
       :message="`¿Estás seguro de que deseas eliminar la noticia '${publicationToDelete?.titulo}'?`"
       :confirm-text="'Eliminar'" @confirm="handleDelete" @cancel="showDeleteDialog = false" />
@@ -92,17 +86,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import ButtonComponent from '@/components/ButtonComponent.vue';
-import FormModal from '@/components/FormModal.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import PublicacionesService from '@/api/services/PublicacionesService';
 import { type Publication, type Categoria } from '@/interfaces/Publication';
 import SecondLoaderComponent from '@/components/SecondLoaderComponent.vue';
 
-const showModal = ref(false);
-const isEditMode = ref(false);
-const modalTitle = ref('');
-const selectedPublication = ref<Partial<Publication>>({});
+const router = useRouter();
 const allPublications = ref<Publication[]>([]);
 const publications = ref<Publication[]>([]);
 const categorias = ref<Categoria[]>([]);
@@ -170,55 +161,11 @@ function formatearFecha(fechaISO: string) {
 }
 
 const openCreateModal = () => {
-  isEditMode.value = false;
-  modalTitle.value = 'Crear Publicación';
-  selectedPublication.value = {};
-  showModal.value = true;
+  router.push({ name: 'nueva-publicacion' });
 };
 
-const openViewModal = (noticia: Publication) => {
-  isEditMode.value = true;
-  modalTitle.value = 'Ver Noticia';
-  selectedPublication.value = { ...noticia };
-  showModal.value = true;
-};
-
-const handleSubmit = async (data: any) => {
-  try {
-    loading.value = true;
-
-    if (!data.categoriaId) {
-      console.error('La categoría es requerida');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('titulo', data.titulo);
-    formData.append('descripcion', data.descripcion);
-    formData.append('categoriaId', data.categoriaId.toString());
-    formData.append('importante', data.importante);
-    if (data.imagen) {
-      formData.append('imagenArchivo', data.imagen);
-    }
-    if (data.documento) {
-      formData.append('documentoArchivo', data.documento);
-    }
-
-    if (isEditMode.value && selectedPublication.value.id) {
-      const eliminarDocumento = !data.documentEnabled;
-      formData.append('eliminarDocumento', eliminarDocumento.toString());
-      await PublicacionesService.actualizarPublicacion(selectedPublication.value.id, formData);
-    } else {
-      await PublicacionesService.crearPublicacion(formData);
-    }
-
-    await loadAllPublications();
-    showModal.value = false;
-  } catch (error) {
-    console.error('Error al guardar publicación:', error);
-  } finally {
-    loading.value = false;
-  }
+const openViewModal = (publication: Publication) => {
+  router.push({ name: 'editar-publicacion', params: { id: publication.id! } });
 };
 
 const openDeleteConfirm = (publication: Publication) => {
@@ -259,6 +206,9 @@ const handleDelete = async () => {
   top: 50% !important;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -288,9 +238,12 @@ const handleDelete = async () => {
 
   >.filter-panel,
   >.mt-3,
-  >.empty-state,
-  >.loader-wrapper {
+  >.empty-state {
     position: relative;
+    z-index: 1;
+  }
+
+  >.loader-wrapper {
     z-index: 1;
   }
 }
@@ -344,7 +297,7 @@ const handleDelete = async () => {
   padding: 1.25rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(var(--black-rgb), 0.08);
+  border: 1px solid var(--border-color);
 
   .filter-label {
     font-size: 0.95rem;
@@ -364,19 +317,12 @@ const handleDelete = async () => {
       gap: 0.5rem;
       padding: 0.65rem 1rem;
       border: 2px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 2px;
       color: var(--text-secondary-clr);
       font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-
-      &:hover {
-        border-color: var(--primary-green-color);
-        background: rgba(46, 85, 64, 0.05);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(var(--black-rgb), 0.1);
-      }
 
       &.active {
         background: var(--primary-green-color);
@@ -412,7 +358,7 @@ const handleDelete = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.8rem;
+  padding: 1rem;
   border-bottom: 2px solid var(--border-color);
 
   .header-title {
@@ -445,16 +391,11 @@ const handleDelete = async () => {
   }
 
   .btn-create {
-    background-color: var(--accent-color);
+    background-color: #e7e9ee;
     padding: 0.75rem 1.5rem;
     font-weight: 500;
-    box-shadow: 0 0 2px rgba(0, 0, 0, .5);
     scale: 1;
     transition: scale 0.3s ease;
-
-    &:hover {
-      opacity: 0.9;
-    }
   }
 
   .btn-create:active {
@@ -472,15 +413,10 @@ const handleDelete = async () => {
   background-color: var(--tertiary-bg);
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(var(--black-rgb), 0.1);
+  border: 1px solid var(--border-color);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(var(--black-rgb), 0.2);
-  }
 
   .card-image {
     position: relative;
@@ -574,19 +510,16 @@ const handleDelete = async () => {
     .btn-view {
       flex: 1;
       background-color: var(--primary-green-color);
-      color: white;
+      color: var(--text-color-1);
       padding: 0.65rem 1rem;
       font-weight: 500;
       transition: background-color 0.2s;
-
-      &:hover {
-        background-color: #218838;
-      }
     }
 
     .btn-delete {
       flex: 1;
-      color: white;
+      background-color: #398876;
+      color: var(--text-color-1);
       padding: 0.65rem 1rem;
       font-weight: 500;
       transition: background-color 0.2s;

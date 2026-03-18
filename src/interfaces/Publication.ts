@@ -4,12 +4,18 @@ export interface Categoria {
 }
 
 export interface Publication {
-  id?: string;
+  id?: number;
   titulo: string;
   descripcion: string;
   categoria?: Categoria;
   imagenPortadaUrl?: string;
-  documentoUrl?: string;
   fechaCreacion: string;
   importante?: boolean;
+}
+
+export interface Documento {
+  id: number;
+  nombre: string;
+  url: string;
+  fechaSubida: string;
 }

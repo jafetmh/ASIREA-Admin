@@ -9,6 +9,7 @@ import useAuthStore from '@/store/authStore'
 import PersonalAdmin from '@/views/PersonalAdmin.vue'
 import PersonalInactivo from '@/views/PersonalInactivo.vue'
 import MiembrosInactivos from '@/views/MiembrosInactivos.vue'
+import PublicationFormView from '@/views/PublicationFormView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,6 +49,18 @@ const router = createRouter({
           name: 'noticias',
           meta: { requiresAuth: true },
           component: PublicationsView
+        },
+        {
+          path: 'noticias/nueva',
+          name: 'nueva-publicacion',
+          meta: { requiresAuth: true },
+          component: PublicationFormView
+        },
+        {
+          path: 'noticias/editar/:id',
+          name: 'editar-publicacion',
+          meta: { requiresAuth: true },
+          component: PublicationFormView
         },
         {
           path: 'junta',

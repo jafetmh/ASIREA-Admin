@@ -15,7 +15,8 @@
         <a href="/admin/home">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
             <path
-              d="M3 13h1v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h1c.4 0 .77-.24.92-.62.15-.37.07-.8-.22-1.09l-8.99-9a.996.996 0 0 0-1.41 0l-9.01 9c-.29.29-.37.72-.22 1.09s.52.62.92.62Zm9-8.59 6 6V20H6v-9.59z" />
+              d="M20 11h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1m-1 8h-4v-6h4zm-9-4H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1m-1 4H5v-2h4zM20 3h-6c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1m-1 4h-4V5h4zm-9-4H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1m-1 8H5V5h4z">
+            </path>
           </svg>
           <span>Inicio</span>
         </a>
@@ -138,11 +139,10 @@ function logout() {
 <style scoped lang="scss">
 #sidebar {
   box-sizing: border-box;
-  height: calc(100vh - 58.84px);
+  height: calc(100vh - var(--top-var, 58.84px));
   width: 250px;
   padding: .5em 0;
-  background-color: var(--tertiary-bg);
-  border-right: 1px solid var(--border-color);
+  background: var(--primary-dark-color);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
   position: sticky;
@@ -184,7 +184,6 @@ function logout() {
 
 #sidebar ul li.active a {
   width: 100%;
-  color: var(--accent-color);
   background-color: var(--active-link);
 }
 
@@ -193,7 +192,7 @@ function logout() {
 #sidebar .logo {
   padding: 0.85em;
   text-decoration: none;
-  color: var(--text-secondary-clr);
+  color: white;
   display: flex;
   align-items: center;
   gap: 1em;
@@ -202,7 +201,7 @@ function logout() {
 #sidebar ul li a span,
 #sidebar ul li button span,
 li .sub-menu {
-  font-size: 1em;
+  font-size: .950em;
   font-weight: 400;
   color: var(--nav-link-active-color);
 }
@@ -228,7 +227,7 @@ li .sub-menu {
 
 #sidebar a:hover,
 #sidebar .dropdown-btn:hover {
-  background-color: var(--nav-link-active-hover);
+  background-color: var(--active-link);
 }
 
 #sidebar .sub-menu {
@@ -264,12 +263,12 @@ ul li a svg {
 
 #toggle-btn {
   margin-left: auto;
-  padding: 1em;
+  padding: .8em;
   border: none;
-  border-radius: 0.5em;
+  border-radius: .2em;
   background: none;
   cursor: pointer;
-  color: var(--text-secondary-clr);
+  color: white;
   transition: background-color .3s ease;
 
   svg {

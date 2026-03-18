@@ -670,7 +670,7 @@ const resetForm = () => {
 
   .form-section {
     flex: 1.3;
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     background: var(--bg-green);
     padding: 12px;
