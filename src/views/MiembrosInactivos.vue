@@ -4,6 +4,8 @@ import { RouterLink } from 'vue-router';
 import { type Member } from '@/interfaces/Member';
 import { getMembersInactivos } from '@/api/services/JuntaDirectivaService';
 import User from '@/components/icons/User.vue';
+import BackBtnComponent from '@/components/BackBtnComponent.vue';
+import router from '@/router';
 
 const membersList = ref<Member[]>([]);
 const isLoading = ref(false);
@@ -32,6 +34,9 @@ const formatDate = (dateString?: string) => {
 onMounted(() => {
   loadMembersInactivos();
 });
+
+const goBack = () => router.push({ name: 'junta' });
+
 </script>
 
 <template>
@@ -39,13 +44,7 @@ onMounted(() => {
     <!-- Header -->
     <div class="page-header">
       <div class="header-left">
-        <RouterLink to="/admin/junta" class="btn-back">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
-            <path d="M11.79 6.29 6.09 12l5.7 5.71 1.42-1.42L9.91 13H18v-2H9.91l3.3-3.29z"></path>
-          </svg>
-          Volver
-        </RouterLink>
+        <BackBtnComponent @click="goBack" class="btn-back"></BackBtnComponent>
         <div class="title-section">
           <h1 class="empty-title">Miembros de Junta Inactivos</h1>
           <p class="subtitle">Registros de miembros que han sido dados de baja</p>
@@ -117,23 +116,10 @@ onMounted(() => {
 .header-left {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1rem;
 }
 
-.btn-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--primary-green-color);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-}
 
 .title-section {
   .empty-title {
@@ -151,10 +137,10 @@ onMounted(() => {
 }
 
 .badge-count {
-  background-color: var(--secondary-bg);
+  background: rgba(var(--primary-green-color-rgb), 0.12);
   color: var(--text-secondary-clr);
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--border-radius);
   font-size: 0.875rem;
   font-weight: 500;
 }

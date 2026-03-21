@@ -23,7 +23,7 @@
     <Transition name="slide-fade">
       <div v-if="isExpanded" class="card-actions">
         <ButtonComponent label="Actualizar" :rounded="false" class="btn-edit" @click.stop="handleEdit" />
-        <ButtonComponent label="Eliminar" :rounded="false" class="btn-delete" @click.stop="handleDelete" />
+        <ButtonComponent label="Eliminar" :rounded="false" :strong-label="true" class="btn-delete" @click.stop="handleDelete" />
       </div>
     </Transition>
   </div>
@@ -84,7 +84,7 @@ const handleDelete = () => {
   display: flex;
   gap: 1rem;
   padding: 1.25rem;
-  background-color: var(--bg-body);
+  background-color: #c7c9c8;
 }
 
 .card-photo {
@@ -173,27 +173,13 @@ const handleDelete = () => {
 
   .btn-edit {
     background-color: var(--primary-green-color);
-    color: var(--btn-primary-text);
     border-color: var(--primary-green-color);
-
-    &:hover {
-      background-color: var(--btn-hover-green);
-      box-shadow: 0 2px 6px rgba(var(--primary-green-color-rgb), 0.3);
-      transform: translateY(-1px);
-    }
   }
 
   .btn-delete {
     background-color: var(--tertiary-bg);
-    color: var(--error-color);
+    color: var(--text-light) !important;
     border-color: var(--border-color);
-
-    &:hover {
-      background-color: var(--error-color);
-      color: var(--btn-primary-text);
-      box-shadow: 0 2px 6px rgba(231, 20, 20, 0.3);
-      transform: translateY(-1px);
-    }
   }
 }
 
@@ -216,7 +202,7 @@ const handleDelete = () => {
   opacity: 0;
 }
 
-@media (max-width: 576px) {
+@include respond-to('mobile-sm') {
   .card-main {
     padding: 1rem;
   }

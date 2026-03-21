@@ -143,7 +143,7 @@ function logout() {
   width: 250px;
   padding: .5em 0;
   background: var(--primary-dark-color);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 0px 16px 0px rgba(0, 0, 0, .5);
 
   position: sticky;
   top: var(--top-var);
@@ -151,6 +151,7 @@ function logout() {
   transition: 300ms ease-in-out;
   overflow: hidden;
   text-wrap: nowrap;
+  z-index: 300;
 }
 
 #sidebar.close {
@@ -190,7 +191,7 @@ function logout() {
 #sidebar a,
 #sidebar .dropdown-btn,
 #sidebar .logo {
-  padding: 0.85em;
+  padding: 0.95em;
   text-decoration: none;
   color: white;
   display: flex;

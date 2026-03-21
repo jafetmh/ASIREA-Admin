@@ -380,15 +380,9 @@ const resetForm = () => {
   }
 }
 
-@media (min-width: 768px) {
-  .offcanvas-desktop {
-    width: 550px !important;
-  }
-}
-
-@media (min-width: 992px) {
-  .offcanvas-desktop {
-    width: 600px !important;
+@include respond-to(mobile) {
+  .modal-header .close-btn {
+    color: var(--text-light);
   }
 }
 </style>

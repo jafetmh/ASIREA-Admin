@@ -19,6 +19,11 @@
     <!-- Sección principal: formulario + footer con botones -->
     <section class="publication-section">
 
+      <div v-if="loading" class="publication-loading">
+        <SecondLoaderComponent />
+      </div>
+
+      <template v-else>
       <div class="form-body">
 
         <!-- Columna izquierda: campos del formulario -->
@@ -118,6 +123,7 @@
         <ButtonComponent :label="submitLabel" :strong-label="true" :rounded="false" @click="handleSubmit"
           class="btn-save" :is-icon="SendIcon" :disabled="saving" />
       </div>
+      </template>
 
     </section>
 
@@ -277,6 +283,7 @@ const categorias = ref<Categoria[]>([]);
 const imageInput = ref<HTMLInputElement | null>(null);
 const imagePreview = ref<string>('');
 const saving = ref(false);
+const loading = ref(false);
 
 const populateForm = (publication: Publication) => {
   formData.titulo = publication.titulo;
@@ -401,6 +408,7 @@ const formatDate = (dateStr: string) => {
 // ─── Montaje ──────────────────────────────────────────────────────────────────
 
 onMounted(async () => {
+  loading.value = true;
   try {
     const [categoriasRes] = await Promise.all([
       PublicacionesService.obtenerCategorias(),
@@ -417,6 +425,8 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Error al cargar datos:', error);
+  } finally {
+    loading.value = false;
   }
 });
 </script>
@@ -455,7 +465,7 @@ onMounted(async () => {
 
     h2 {
       margin: 0;
-      font-size: 1.3rem !important;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-color-1);
     }
@@ -678,6 +688,9 @@ select option {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  padding: 10px;
+  background-color: var(--active-link);
+  border-radius: var(--border-radius);
 
   .image-actions {
     display: flex;
@@ -694,7 +707,7 @@ select option {
 
 .upload-zone {
   border: 1px dashed var(--primary-green-color);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--form-input-bg);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -861,7 +874,6 @@ select option {
       flex-shrink: 0;
       background-color: rgba(var(--primary-green-color-rgb), 0.08);
       color: var(--text-color-1);
-      border-radius: 6px;
       padding: 0.45rem 1rem;
       font-size: 0.85rem;
       font-weight: 600;
@@ -1059,6 +1071,15 @@ select option {
   }
 }
 
+// ─── Publication loading ──────────────────────────────────────────────────────
+.publication-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 0;
+  flex: 1;
+}
+
 // ─── Loader overlay ───────────────────────────────────────────────────────────
 .loader-overlay {
   position: fixed;
@@ -1113,6 +1134,14 @@ select option {
 }
 
 @include respond-to(mobile) {
+  .page-header .header-title h2 {
+    font-size: 1.1rem;
+  }
+
+  .preview-section {
+    margin-top: 16px;
+  }
+
   .documents-section .documents-header {
     flex-wrap: wrap;
 
@@ -1170,7 +1199,7 @@ select option {
   }
 
   .page-header .header-title h2 {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
   }
 
   .description-floating .description-textarea {

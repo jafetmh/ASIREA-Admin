@@ -38,18 +38,18 @@
       <div class="inputs-container">
         <!-- Campo Nombre -->
         <div class="form-floating">
-          <InputComponent id="nombre" :model-value="formData.nombre" @update:model-value="$emit('update:nombre', $event)"
-            placeholder="Ingrese el nombre completo" :error="!!errors.nombre" @blur="$emit('validate-nombre')"
-            class="form-control" />
+          <InputComponent id="nombre" :model-value="formData.nombre"
+            @update:model-value="$emit('update:nombre', $event)" placeholder="Ingrese el nombre completo"
+            :error="!!errors.nombre" @blur="$emit('validate-nombre')" class="form-control" />
           <label for="nombre">Nombre Completo <span class="required">*</span></label>
         </div>
         <div v-if="errors.nombre" class="error-message">{{ errors.nombre }}</div>
 
         <!-- Campo Puesto -->
         <div class="form-floating">
-          <InputComponent id="puesto" :model-value="formData.puesto" @update:model-value="$emit('update:puesto', $event)"
-            placeholder="Ingrese el puesto" :error="!!errors.puesto" @blur="$emit('validate-puesto')"
-            class="form-control" />
+          <InputComponent id="puesto" :model-value="formData.puesto"
+            @update:model-value="$emit('update:puesto', $event)" placeholder="Ingrese el puesto"
+            :error="!!errors.puesto" @blur="$emit('validate-puesto')" class="form-control" />
           <label for="puesto">Puesto <span class="required">*</span></label>
         </div>
         <div v-if="errors.puesto" class="error-message">{{ errors.puesto }}</div>
@@ -65,7 +65,8 @@
 
       <!-- Botones -->
       <div class="form-actions">
-        <ButtonComponent label="Cancelar" :strong-label="true" :rounded="true" @click="$emit('cancel')" class="btn-cancel" />
+        <ButtonComponent label="Cancelar" :strong-label="true" :rounded="true" @click="$emit('cancel')"
+          class="btn-cancel" />
         <ButtonComponent type="submit" :label="isEdit ? 'Actualizar' : 'Guardar'" :rounded="true" class="btn-submit" />
       </div>
     </form>
@@ -135,6 +136,7 @@ const handleRemoveImage = () => {
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
+  background-color: var(--content-bg);
 }
 
 // Sección de foto
@@ -177,7 +179,6 @@ const handleRemoveImage = () => {
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(var(--primary-green-color-rgb), 0.25);
 
       svg {
         width: 60px;
@@ -216,7 +217,7 @@ const handleRemoveImage = () => {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background-color: rgba(var(--warning-rgb), 1);
+      background-color: rgb(3 54 32 / 76%);
       border: 2px solid var(--card-bg-solid);
       color: var(--btn-primary-text);
       display: flex;
@@ -228,7 +229,7 @@ const handleRemoveImage = () => {
 
       &:hover {
         background-color: #c41111;
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
 
       svg {
@@ -252,9 +253,9 @@ const handleRemoveImage = () => {
   flex-direction: column;
   gap: 1rem;
   padding: 1.25rem;
-  background-color: var(--form-container-bg);
+  background-color: rgb(3 54 32 / 76%);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   backdrop-filter: blur(5px);
 }
 
@@ -327,7 +328,7 @@ const handleRemoveImage = () => {
   }
 
   .btn-submit {
-    background-color: var(--primary-green-color);
+    background-color: rgb(3 54 32 / 76%);
     color: var(--btn-primary-text);
     border: none;
 

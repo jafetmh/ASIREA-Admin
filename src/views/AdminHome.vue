@@ -20,25 +20,23 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-section">
-      <h2 class="section-title">Resumen de Publicaciones</h2>
-      <div class="stats-grid">
-        <div class="stat-card" v-for="stat in stats" :key="stat.id">
-          <div class="stat-icon" :style="{ backgroundColor: stat.color }">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M5 7h5v6H5zm0 8h10v2H5zm7-4h3v2h-3zm0-4h3v2h-3z" />
-              <path
-                d="M21 18c0 .55-.45 1-1 1s-1-.45-1-1V5c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v13c0 1.65 1.35 3 3 3h16c1.65 0 3-1.35 3-3V6h-2zM4 19c-.55 0-1-.45-1-1V5h14v13c0 .35.07.69.18 1z" />
-            </svg>
-          </div>
-          <div class="stat-info">
-            <span class="stat-value">{{ stat.count }}</span>
-            <span class="stat-label">{{ stat.categoria }}</span>
-          </div>
+    <!--     <h2 class="section-title">Resumen de Publicaciones</h2>
+ -->
+    <div class="stats-grid">
+      <div class="stat-card" v-for="stat in stats" :key="stat.id">
+        <div class="stat-icon" :style="{ backgroundColor: stat.color }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M5 7h5v6H5zm0 8h10v2H5zm7-4h3v2h-3zm0-4h3v2h-3z" />
+            <path
+              d="M21 18c0 .55-.45 1-1 1s-1-.45-1-1V5c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v13c0 1.65 1.35 3 3 3h16c1.65 0 3-1.35 3-3V6h-2zM4 19c-.55 0-1-.45-1-1V5h14v13c0 .35.07.69.18 1z" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stat.count }}</span>
+          <span class="stat-label">{{ stat.categoria }}</span>
         </div>
       </div>
     </div>
-
     <!-- Quick Actions -->
     <div class="quick-actions-section">
       <h2 class="section-title">Acciones Rápidas</h2>
@@ -85,8 +83,8 @@
     <!-- Important Publications -->
     <div class="important-section">
       <div class="section-header">
-        <h2 class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <h2 class="section-title" style="color: var(--text-light);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#f0f0f0" viewBox="0 0 24 24">
             <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
             <path d="M13.51 10.33 12 7l-1.51 3.33-3.49.28 2.78 2.5L8.67 17 12 14.78 15.33 17l-1.11-3.89 2.78-2.5z">
             </path>
@@ -105,12 +103,14 @@
       </div>
 
       <div v-else-if="importantPublications.length === 0" class="empty-state">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 24 24">
-          <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
-          <path
-            d="m6.87 14.33-1.83 6.4c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02L12 18.2l5.45 3.63a.99.99 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1.83-6.4 4.54-4.08c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-5.7-.45-2.47-5.46a.998.998 0 0 0-1.82 0L8.62 8.06l-5.7.45c-.4.03-.74.3-.87.68s-.02.8.28 1.06z">
-          </path>
-        </svg>
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+            <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+            <path
+              d="m6.87 14.33-1.83 6.4c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02L12 18.2l5.45 3.63a.99.99 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1.83-6.4 4.54-4.08c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-5.7-.45-2.47-5.46a.998.998 0 0 0-1.82 0L8.62 8.06l-5.7.45c-.4.03-.74.3-.87.68s-.02.8.28 1.06z">
+            </path>
+          </svg>
+        </div>
         <p>No hay publicaciones marcadas como importantes</p>
         <small>Las publicaciones importantes aparecerán aquí</small>
       </div>
@@ -245,11 +245,11 @@ onMounted(() => {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: var(--content-bg);
+  background-color: #2b392e;
   overflow: hidden;
   min-height: 100vh;
 
-  &::before {
+  /*  &::before {
     content: '';
     position: absolute;
     top: 0;
@@ -265,7 +265,7 @@ onMounted(() => {
     pointer-events: none;
     z-index: 0;
     opacity: 0.22;
-  }
+  } */
 
   >.hero-header,
   >.stats-section,
@@ -276,7 +276,7 @@ onMounted(() => {
   }
 
   .quick-actions-section {
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     background-color: #cfcfcfb1;
     padding: 20px;
   }
@@ -354,8 +354,8 @@ onMounted(() => {
 // Section Title
 .section-title {
   font-size: 1.1rem;
-  font-weight: 500;
   color: var(--title-color);
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -365,12 +365,13 @@ onMounted(() => {
   }
 }
 
+
 // Stats Section
 .stats-section {
   margin-bottom: 2rem;
   background-color: rgba(207, 207, 207, 0.6941176471);
   padding: 12px;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
 }
 
 .stats-grid {
@@ -384,8 +385,8 @@ onMounted(() => {
   align-items: center;
   gap: 1rem;
   padding: 1.25rem;
-  background-color: var(--card-bg);
-  border-radius: 12px;
+  background-color: #c7d4cee6;
+  border-radius: var(--border-radius);
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 
@@ -425,12 +426,14 @@ onMounted(() => {
       font-size: 0.875rem;
       color: var(--text-color-1);
       margin-top: 0.25rem;
+      text-transform: capitalize;
     }
   }
 }
 
 // Quick Actions
 .quick-actions-section {
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -446,16 +449,13 @@ onMounted(() => {
   align-items: center;
   gap: 0.75rem;
   padding: 1.5rem;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  background-color: rgb(193 201 194 / 90%);
+  border-radius: var(--border-radius);
   text-decoration: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 
   &:hover {
-    border-color: var(--primary-green-color);
-    transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(var(--primary-green-color-rgb), 0.15);
 
     .action-icon {
@@ -506,13 +506,12 @@ onMounted(() => {
 
   .view-all-link {
     font-size: 0.875rem;
-    color: var(--primary-green-color);
+    color: var(--text-light);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 
     &:hover {
-      color: var(--btn-hover-green);
       text-decoration: underline;
     }
   }
@@ -652,13 +651,17 @@ onMounted(() => {
   padding: 3rem 2rem;
   background-color: var(--empty-state-bg);
   border: 2px dashed var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   text-align: center;
 
-  svg {
-    color: var(--primary-green-color);
-    opacity: 0.5;
-    margin-bottom: 1rem;
+  .icon-wrapper {
+    padding: 10px;
+    border-radius: 50%;
+    background-color: var(--bg-green-1);
+    svg {
+      color: var(--primary-green-color);
+      opacity: 0.5;
+    }
   }
 
   p {

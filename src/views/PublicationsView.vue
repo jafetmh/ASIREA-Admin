@@ -55,7 +55,7 @@
             <p class="card-description">{{ publication.descripcion }}</p>
           </div>
           <div class="card-footer">
-            <ButtonComponent label="Ver Publicación" :rounded="true" @click="openViewModal(publication)"
+            <ButtonComponent label="Ver Publicación" :rounded="true" @click="openViewForm(publication)"
               class="btn-view" />
             <ButtonComponent label="Eliminar" :rounded="true" @click="openDeleteConfirm(publication)"
               class="btn-delete" />
@@ -164,7 +164,7 @@ const openCreateModal = () => {
   router.push({ name: 'nueva-publicacion' });
 };
 
-const openViewModal = (publication: Publication) => {
+const openViewForm = (publication: Publication) => {
   router.push({ name: 'editar-publicacion', params: { id: publication.id! } });
 };
 
@@ -206,6 +206,7 @@ const handleDelete = async () => {
   top: 50% !important;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;

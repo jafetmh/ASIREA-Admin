@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
+import BackBtnComponent from '@/components/BackBtnComponent.vue';
 import { type Personal } from '@/interfaces/Personal';
 import { getPersonalInactivos } from '@/api/services/AdministrativoService';
 import User from '@/components/icons/User.vue';
+import router from '@/router';
 
 const personalList = ref<Personal[]>([]);
 const isLoading = ref(false);
@@ -32,6 +33,9 @@ const formatDate = (dateString?: string) => {
 onMounted(() => {
   loadPersonalInactivos();
 });
+
+const goBack = () => router.push({ name: 'personal-admin' });
+
 </script>
 
 <template>
@@ -39,12 +43,8 @@ onMounted(() => {
     <!-- Header -->
     <div class="page-header">
       <div class="header-left">
-        <RouterLink to="/admin/personal-admin" class="btn-back">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z" />
-          </svg>
-          Volver
-        </RouterLink>
+        <BackBtnComponent @click="goBack">
+        </BackBtnComponent>
         <div class="title-section">
           <h1>Personal Administrativo Inactivo</h1>
           <p class="subtitle">Registros de personal que han sido dados de baja</p>
@@ -115,6 +115,7 @@ onMounted(() => {
 .header-left {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1rem;
 }
 
@@ -149,10 +150,10 @@ onMounted(() => {
 }
 
 .badge-count {
-  background-color: var(--secondary-bg);
+  background-color: rgba(var(--primary-green-color-rgb), 0.12);
   color: var(--text-secondary-clr);
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--border-radius);
   font-size: 0.875rem;
   font-weight: 500;
 }

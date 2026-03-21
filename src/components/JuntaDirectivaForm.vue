@@ -352,7 +352,7 @@ const resetForm = () => {
   gap: 1.5rem;
   padding: 1.5rem;
   overflow-y: auto;
-  background-color: var(--bg-body);
+  background-color: var(--primary-green-color);
   flex: 1 1 0%;
   min-height: 0;
 }
@@ -490,7 +490,7 @@ const resetForm = () => {
 
     img {
       width: 100%;
-      height: 350px;
+      height: 250px;
       object-fit: cover;
       display: block;
     }
@@ -633,7 +633,6 @@ const resetForm = () => {
   }
 
   .form-actions {
-    flex-direction: column-reverse;
 
     button {
       width: 100%;
@@ -672,7 +671,7 @@ const resetForm = () => {
     flex: 1.3;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: var(--bg-green);
+    background: #2d3e37;
     padding: 12px;
   }
 
@@ -685,7 +684,7 @@ const resetForm = () => {
   .upload-zone .image-preview img {
     height: 100%;
     min-height: 200px;
-    max-height: 400px;
+    max-height: 300px;
   }
 
   .upload-zone .upload-content {

@@ -180,7 +180,7 @@ onMounted(() => {
   top: var(--top-var);
   background: var(--tertiary-bg);
   z-index: 200;
-  padding: 1.8rem;
+  padding: 1.2rem;
   border-bottom: 2px solid var(--border-color);
 
   .header-content {
@@ -268,6 +268,7 @@ onMounted(() => {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  margin-top: 1rem;
   margin-bottom: 2rem;
 
   .btn-add {
@@ -323,7 +324,7 @@ onMounted(() => {
   text-align: center;
   background-color: var(--empty-state-bg);
   border-radius: 12px;
-  border: 2px dashed var(--border-color);
+  border: 1px solid var(--border-color-1);
 
   .empty-icon {
     width: 100px;
@@ -371,7 +372,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 768px) {
+@include respond-to('mobile') {
   .page-header {
     padding: 1.2rem;
 
@@ -432,7 +433,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 480px) {
+@include respond-to('mobile-sm') {
   .page-header {
     .header-content {
       flex-direction: column;
@@ -465,7 +466,7 @@ onMounted(() => {
   }
 }
 
-@media (min-width: 1400px) {
+@include respond-to('desktop-lg') {
   .cards-grid {
     grid-template-columns: repeat(3, 1fr);
   }

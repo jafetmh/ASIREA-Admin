@@ -12,7 +12,7 @@
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   color: var(--text-color-1);
   display: flex;
   align-items: center;

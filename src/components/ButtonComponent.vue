@@ -39,7 +39,7 @@ button {
   padding: 5px 20px;
 
   span {
-    color: var(--text-color-2);
+    color: var(--text-color-2, currentColor);
     font-weight: bold;
     text-wrap: nowrap;
     font-size: .8em;
