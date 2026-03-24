@@ -10,10 +10,10 @@
         </div>
         <div class="d-flex justify-content-center">
           <div class="login-content">
-            <div class="d-flex flex-column align-items-center mb-4">
+            <!--             <div class="d-flex flex-column align-items-center mb-4">
               <h6 class="header">Inicio de Sesión</h6>
               <div class="underline"></div>
-            </div>
+            </div> -->
             <form class="form" @submit.prevent="singIn">
               <div class="form-floating">
                 <span>
@@ -30,15 +30,26 @@
                   v-model="user.password" />
                 <label for="password">Contraseña</label>
                 <span class="psw-icon" @click="togglePasswordVisible">
-                  <svg v-if="!isPasswordVisible" xmlns="http://www.w3.org/2000/svg" height="24px"
-                    viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                    <path
-                      d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+
+                  <svg v-if="!isPasswordVisible" width="24" height="26" version="1.1" id="_x32_"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
+                    xml:space="preserve">
+                    <g>
+                      <path class="st0" d="M512,282.163c-0.881-1.49-21.826-38.71-63.998-76.621c-21.106-18.932-47.584-38.03-79.667-52.494
+		c-32.041-14.455-69.743-24.183-112.337-24.162c-42.595-0.014-80.296,9.707-112.341,24.162
+		c-48.12,21.722-83.626,53.753-107.33,80.244C12.627,259.846,0.644,281.037,0,282.163l29.331,16.484l13.676,7.749l0.024-0.042
+		l0.007-0.014c0.895-1.629,20.324-34.688,56.487-66.326c18.068-15.848,40.244-31.331,66.274-42.786
+		c26.061-11.456,55.91-18.96,90.199-18.974c35.104,0.014,65.561,7.881,92.056,19.798c39.685,17.848,70.324,45.171,90.808,68.131
+		c10.245,11.462,17.938,21.785,22.98,29.1c2.525,3.657,4.385,6.566,5.574,8.49c0.594,0.966,1.02,1.679,1.286,2.119l0.252,0.448
+		l0.042,0.063l9.707-5.518l-9.734,5.469L512,282.163z" />
+                      <path class="st0" d="M255.999,210.339c-47.71,0-86.388,38.674-86.388,86.391c0,47.71,38.678,86.384,86.388,86.384
+		c47.71,0,86.388-38.674,86.388-86.384C342.386,249.014,303.708,210.339,255.999,210.339z" />
+                    </g>
                   </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                    fill="currentColor">
-                    <path
-                      d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z" />
+                  <svg v-else width="26" height="26" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 10C4 10 5.6 15 12 15M12 15C18.4 15 20 10 20 10M12 15V18M18 17L16 14.5M6 17L8 14.5"
+                      stroke="#464455" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </span>
               </div>
@@ -147,6 +158,8 @@ const togglePasswordVisible = () => {
     height: 100vh;
     max-height: 100vh;
     background-color: #f0f0f0;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color-1);
 
     .logo-section {
       display: flex;
@@ -232,6 +245,10 @@ const togglePasswordVisible = () => {
       flex-direction: column;
       gap: 14px;
 
+      input {
+        caret-color: rgba(var(--primary-green-color-rgb), .5);
+      }
+
       .form-floating span {
         position: absolute;
         margin-right: 10px;
@@ -264,6 +281,16 @@ const togglePasswordVisible = () => {
 
       .form-control {
         background-color: var(--bg-body) !important;
+        transition: ease 0.2ms;
+      }
+
+      .form-control:focus {
+        border: 2px solid rgba(var(--primary-green-color-rgb), 0.3);
+      }
+
+      .form-control,
+      .sing-in-btn {
+        border-color: var(--border-color);
       }
 
       .form-control,
@@ -281,8 +308,7 @@ const togglePasswordVisible = () => {
 
       .sing-in-btn {
         padding: 12px 0;
-        border-color: var(--primary-green-color);
-        background-color: rgba(var(--white-rgb), 1);
+        background-color: #c9d7ce;
       }
     }
   }
@@ -358,7 +384,7 @@ const togglePasswordVisible = () => {
     @include flexbox();
 
     .login-container {
-      width: 40vw;
+      width: 36vw;
       height: 90vh;
       max-width: 1400px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
