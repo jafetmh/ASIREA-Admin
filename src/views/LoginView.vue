@@ -109,11 +109,14 @@ const singIn = async () => {
     }
     loading.value = true
     await authStore.singIn(user.value)
+    user.value.password = ""
+    user.value.username = ""
     loading.value = false
 
   } catch (error: any) {
     loading.value = false
-
+    user.value.password = ""
+    
     if (error.response) {
       const status = error.response.status;
       const message = error.response.data?.message || error.response.data?.error || 'Error en la solicitud';

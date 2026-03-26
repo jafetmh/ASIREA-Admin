@@ -1,5 +1,5 @@
 
-const localPaths = {
+export const apiRoutes = {
     singIn: "/auth/login",
     singUp: "/user/sing-up",
     publicaciones: "/publicaciones",
@@ -9,15 +9,4 @@ const localPaths = {
     administrativo: "/administrativo",
     administrativo_inactivos: "/administrativo/inactivos"
 }
-const prodPaths = {
-    singIn: "",
-    singUp: "",
-    publicaciones: "",
-    publicaciones_categorias: "",
-    junta_directiva: "",
-    junta_directiva_inactivos: "",
-    administrativo: "",
-    administrativo_inactivos: ""
-}
 
-export const apiRoutes = import.meta.env.DEV?localPaths:prodPaths;
